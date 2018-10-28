@@ -23,5 +23,6 @@ public class LoginCommand extends SimpleCommand {
         ReMinecraft.INSTANCE.MAIN_CONFIG.var_sessionId = "dsljf";
         DiscordUtils.recievedMessage.getChannel().sendMessage
                 (DiscordUtils.buildInfoEmbed("Credentials Updated", "Your credentials have been updated!")).queue();
+        ReMinecraft.INSTANCE.reLaunch();
     }
 }

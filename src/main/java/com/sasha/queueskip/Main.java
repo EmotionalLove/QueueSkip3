@@ -3,6 +3,7 @@ package com.sasha.queueskip;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.LoginCommand;
+import com.sasha.queueskip.command.ToggleActiveCommand;
 import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
@@ -15,6 +16,9 @@ import javax.security.auth.login.LoginException;
 
 public class Main extends RePlugin implements SimpleListener {
 
+    public static Main INSTANCE;
+    public static final String VERSION = "3.0 beta";
+
     public static JDA Jda;
 
     public static Logger logger = new Logger("QueueSkip3");
@@ -24,6 +28,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginInit() {
+        INSTANCE = this;
         this.getReMinecraft().EVENT_BUS.registerListener(this);
     }
 
@@ -40,6 +45,7 @@ public class Main extends RePlugin implements SimpleListener {
     public void registerCommands() {
         try {
             COMMAND_PROCESSOR.register(LoginCommand.class);
+            COMMAND_PROCESSOR.register(ToggleActiveCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }

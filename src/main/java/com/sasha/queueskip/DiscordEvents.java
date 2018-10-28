@@ -9,6 +9,7 @@ public class DiscordEvents extends ListenerAdapter {
     @SubscribeEvent
     public void onDMRx(PrivateMessageReceivedEvent e) {
         if (e.getAuthor().getId().equals(Main.CONFIG.var_managerId)) {
+            DiscordUtils.recievedMessage = e.getMessage();
             e.getMessage().getChannel().sendTyping().queue();
             if (e.getMessage().getContentDisplay().startsWith(";")) {
                 Main.COMMAND_PROCESSOR.processCommand(e.getMessage().getContentDisplay());
