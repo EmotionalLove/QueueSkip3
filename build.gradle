@@ -2,6 +2,19 @@ plugins {
     id 'java'
 }
 
+def urlFile = { url, name ->
+    File file = new File("$buildDir/download/${name}.jar")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
 group 'com.sasha'
 version '3.0'
 
@@ -15,5 +28,5 @@ repositories {
 
 dependencies {
     implementation 'net.dv8tion:JDA:3.8.1_439'
-    implementation 'com.github.EmotionalLove:ReMinecraft:bf5830d'
+    implementation files(urlFile("https://github.com/EmotionalLove/ReMinecraft/releases/download/1.0.2/RE_Minecraft.jar", "ReMinecraft"))
 }
