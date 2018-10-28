@@ -1,0 +1,6 @@
+name: "QueueSkip"
+description: "The QueueSkip implementation for RE:Minecraft"
+authors:
+- "Sasha"
+version: "3.0"
+mainClass: "com.sasha.queueskip.Main"
