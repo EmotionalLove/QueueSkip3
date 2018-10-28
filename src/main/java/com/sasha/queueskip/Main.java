@@ -3,9 +3,12 @@ package com.sasha.queueskip;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.LoginCommand;
+import com.sasha.queueskip.command.RequeueCommand;
 import com.sasha.queueskip.command.ToggleActiveCommand;
+import com.sasha.queueskip.command.WhisperCommand;
 import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.api.RePlugin;
+import com.sasha.reminecraft.api.event.ChatRecievedEvent;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
 import net.dv8tion.jda.core.JDA;
@@ -13,6 +16,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
+import java.io.IOException;
 
 public class Main extends RePlugin implements SimpleListener {
 
@@ -34,11 +38,13 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginEnable() {
+        logger.log("QueueSkip plugin is enabled!");
     }
 
     @Override
     public void onPluginDisable() {
-        if (Jda != null) Jda.shutdown();
+        Jda.shutdown();
+        logger.logWarning("QueueSkip plugin is disabled!");
     }
 
     @Override
@@ -46,6 +52,8 @@ public class Main extends RePlugin implements SimpleListener {
         try {
             COMMAND_PROCESSOR.register(LoginCommand.class);
             COMMAND_PROCESSOR.register(ToggleActiveCommand.class);
+            COMMAND_PROCESSOR.register(RequeueCommand.class);
+            COMMAND_PROCESSOR.register(WhisperCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -76,18 +84,58 @@ public class Main extends RePlugin implements SimpleListener {
             logger.logError("Manager ID isn't set!");
             this.getReMinecraft().stop();
         }
-        try {
-            Jda = new JDABuilder(CONFIG.var_discordToken)
-                    .setEventManager(new AnnotatedEventManager())
-                    .addEventListener(new DiscordEvents())
-                    .buildBlocking();
-        } catch (LoginException | InterruptedException ex) {
-            logger.logError("Couldn't log into Discord. Is the token invalid?");
-            ex.printStackTrace();
+        if (Jda == null) {
+            try {
+                Jda = new JDABuilder(CONFIG.var_discordToken)
+                        .setEventManager(new AnnotatedEventManager())
+                        .addEventListener(new DiscordEvents())
+                        .buildBlocking();
+            } catch (LoginException | InterruptedException ex) {
+                logger.logError("Couldn't log into Discord. Is the token invalid?");
+                ex.printStackTrace();
+            }
         }
         if (!CONFIG.var_queueSkipEnabled) {
             logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
             e.setCancelled(true);
         }
+    }
+
+    // to Color: hi there
+    @SimpleEventHandler
+    public void onChat(ChatRecievedEvent e) {
+        if (isWhisperTo(e.getMessageText().toLowerCase())) {
+            String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
+            String who = begin[1].replace(":", "");
+            String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
+            try {
+                DiscordUtils.recievedMessage.getChannel().sendMessage
+                        (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            return;
+        }
+        if (isWhisperFrom(e.getMessageText().toLowerCase())) {
+            String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
+            String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
+            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
+                try {
+                    pm.sendMessage
+                            (DiscordUtils.buildWhisperFromEmbed(who, msg)).queue();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
+            return;
+        }
+    }
+
+    private boolean isWhisperTo(String s) {
+        return s.matches("to .*: .*$");
+    }
+
+    private boolean isWhisperFrom(String s) {
+        return s.matches("^.* whispers: .*$");
     }
 }
