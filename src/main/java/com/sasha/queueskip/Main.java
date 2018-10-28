@@ -58,5 +58,9 @@ public class Main extends RePlugin implements SimpleListener {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();
         }
+        if (!CONFIG.var_queueSkipEnabled) {
+            logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
+            e.setCancelled(true);
+        }
     }
 }
