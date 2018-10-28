@@ -2,11 +2,14 @@ package com.sasha.queueskip;
 
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
+import com.sasha.queueskip.command.LoginCommand;
 import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
+import com.sasha.simplecmdsys.SimpleCommandProcessor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
 
@@ -16,6 +19,8 @@ public class Main extends RePlugin implements SimpleListener {
 
     public static Logger logger = new Logger("QueueSkip3");
     public static QSkipConfig CONFIG;
+
+    public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
 
     @Override
     public void onPluginInit() {
@@ -33,13 +38,26 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void registerCommands() {
-
+        try {
+            COMMAND_PROCESSOR.register(LoginCommand.class);
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void registerConfig() {
         CONFIG = new QSkipConfig();
         this.getReMinecraft().configurations.add(CONFIG);
+    }
+
+    @SimpleEventHandler
+    public void onPostAuth(MojangAuthenticateEvent.Post e) {
+        if (!e.isSuccessful()) {
+            DiscordUtils.getManager().openPrivateChannel()
+                    .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
+                            .queue());
+        }
     }
 
     @SimpleEventHandler
@@ -53,7 +71,10 @@ public class Main extends RePlugin implements SimpleListener {
             this.getReMinecraft().stop();
         }
         try {
-            Jda = new JDABuilder(CONFIG.var_discordToken).buildBlocking();
+            Jda = new JDABuilder(CONFIG.var_discordToken)
+                    .setEventManager(new AnnotatedEventManager())
+                    .addEventListener(new DiscordEvents())
+                    .buildBlocking();
         } catch (LoginException | InterruptedException ex) {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();
