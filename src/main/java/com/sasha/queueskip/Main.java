@@ -108,12 +108,14 @@ public class Main extends RePlugin implements SimpleListener {
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
-            try {
-                DiscordUtils.recievedMessage.getChannel().sendMessage
-                        (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
+                try {
+                    pm.sendMessage
+                            (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            });
             return;
         }
         if (isWhisperFrom(e.getMessageText().toLowerCase())) {
