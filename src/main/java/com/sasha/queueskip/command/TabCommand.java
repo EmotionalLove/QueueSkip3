@@ -27,10 +27,11 @@ public class TabCommand extends SimpleCommand {
             if (i.get() == 0) {
                 builder.append(entry.getProfile().getName());
                 i.getAndIncrement();
+                return;
             }
             builder.append(", ").append(entry.getProfile().getName());
         });
-        builder.append("\n").append(ReClient.ReClientCache.INSTANCE.tabHeader.getFullText().replaceAll("§.", "")).append("\n```");
+        builder.append("\n").append(ReClient.ReClientCache.INSTANCE.tabFooter.getFullText().replaceAll("§.", "")).append("\n```");
         DiscordUtils.recievedMessage.getChannel().sendMessage(builder.toString()).queue();
     }
 }

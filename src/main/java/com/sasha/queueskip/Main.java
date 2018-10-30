@@ -2,10 +2,7 @@ package com.sasha.queueskip;
 
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
-import com.sasha.queueskip.command.LoginCommand;
-import com.sasha.queueskip.command.RequeueCommand;
-import com.sasha.queueskip.command.ToggleActiveCommand;
-import com.sasha.queueskip.command.WhisperCommand;
+import com.sasha.queueskip.command.*;
 import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.api.event.ChatRecievedEvent;
@@ -54,6 +51,7 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(ToggleActiveCommand.class);
             COMMAND_PROCESSOR.register(RequeueCommand.class);
             COMMAND_PROCESSOR.register(WhisperCommand.class);
+            COMMAND_PROCESSOR.register(TabCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
