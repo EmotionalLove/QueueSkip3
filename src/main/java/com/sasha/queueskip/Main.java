@@ -133,6 +133,9 @@ public class Main extends RePlugin implements SimpleListener {
         }
     }
 
+    public static boolean isConnected() {
+        return Main.CONFIG.var_queueSkipEnabled && Main.INSTANCE.getReMinecraft().minecraftClient.getSession().isConnected();
+    }
     private boolean isWhisperTo(String s) {
         return s.matches("to .*: .*$");
     }

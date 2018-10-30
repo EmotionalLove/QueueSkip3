@@ -19,7 +19,7 @@ public class WhisperCommand extends SimpleCommand {
             DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed("Invalid arguments!")).queue();
             return;
         }
-        if (!Main.CONFIG.var_queueSkipEnabled || !Main.INSTANCE.getReMinecraft().minecraftClient.getSession().isConnected()) {
+        if (Main.isConnected()) {
             DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed("You cannot send messages while queueskip is disabled.")).queue();
             return;
         }
