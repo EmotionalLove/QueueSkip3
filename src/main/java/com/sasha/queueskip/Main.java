@@ -4,9 +4,11 @@ import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.*;
 import com.sasha.reminecraft.Logger;
+import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.api.event.ChatRecievedEvent;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
+import com.sasha.reminecraft.api.event.PlayerDamagedEvent;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -18,7 +20,7 @@ import java.io.IOException;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.0 beta";
+    public static final String VERSION = "3.0-pre";
 
     public static JDA Jda;
 
@@ -54,6 +56,7 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(TabCommand.class);
             COMMAND_PROCESSOR.register(PositionCommand.class);
             COMMAND_PROCESSOR.register(HelpCommand.class);
+            COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -131,6 +134,20 @@ public class Main extends RePlugin implements SimpleListener {
             });
             return;
         }
+    }
+
+    @SimpleEventHandler
+    public void onHurt(PlayerDamagedEvent e) {
+        if (isConnected() && CONFIG.var_safeMode) {
+            DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
+                if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
+                dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
+            });
+        }
+    }
+
+    private float asHearts(float health) {
+        return health/(float)2;
     }
 
     public static boolean isConnected() {

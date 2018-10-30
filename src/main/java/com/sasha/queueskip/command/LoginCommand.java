@@ -3,7 +3,9 @@ package com.sasha.queueskip.command;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+@SimpleCommandInfo(description = "Log into a Mojang account", syntax = {"<email> <password>"})
 public class LoginCommand extends SimpleCommand {
 
     public LoginCommand() {

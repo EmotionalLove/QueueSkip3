@@ -22,7 +22,8 @@ public class PositionCommand extends SimpleCommand {
             return;
         }
         DiscordUtils.recievedMessage.getChannel().sendMessage(
-                DiscordUtils.buildInfoEmbed("Position XYZ", "**X** " + (int)ReClient.ReClientCache.INSTANCE.posX + "\n" +
+                DiscordUtils.buildInfoEmbed("Position XYZ",
+                        "**X** " + (int)ReClient.ReClientCache.INSTANCE.posX + "\n" +
                         "**Y**" + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
                         "**Z**" + (int) ReClient.ReClientCache.INSTANCE.posZ)
         ).queue();
