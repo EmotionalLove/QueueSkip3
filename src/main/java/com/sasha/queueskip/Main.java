@@ -53,6 +53,7 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(WhisperCommand.class);
             COMMAND_PROCESSOR.register(TabCommand.class);
             COMMAND_PROCESSOR.register(PositionCommand.class);
+            COMMAND_PROCESSOR.register(HelpCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
