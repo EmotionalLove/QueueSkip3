@@ -138,7 +138,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onHurt(PlayerDamagedEvent e) {
-        if (isConnected() && CONFIG.var_safeMode) {
+        if (isConnected() && !this.getReMinecraft().areChildrenConnected() && CONFIG.var_safeMode) {
             DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
                 if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
                 dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
@@ -146,13 +146,15 @@ public class Main extends RePlugin implements SimpleListener {
         }
     }
 
+
     private float asHearts(float health) {
-        return health/(float)2;
+        return health / (float) 2;
     }
 
     public static boolean isConnected() {
         return Main.CONFIG.var_queueSkipEnabled && Main.INSTANCE.getReMinecraft().minecraftClient.getSession().isConnected();
     }
+
     private boolean isWhisperTo(String s) {
         return s.matches("to .*: .*$");
     }
