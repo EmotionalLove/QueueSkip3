@@ -20,7 +20,7 @@ import java.io.IOException;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.0-pre";
+    public static final String VERSION = "3.0";
 
     public static JDA Jda;
 
@@ -101,6 +101,13 @@ public class Main extends RePlugin implements SimpleListener {
         if (!CONFIG.var_queueSkipEnabled) {
             logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
             e.setCancelled(true);
+        }
+        if (CONFIG.var_newUser) {
+            Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
+                dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to queueskip",
+                        "View the ;help command for a list of commands.")).queue();
+            });
+            CONFIG.var_newUser = false;
         }
     }
 
