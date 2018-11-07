@@ -75,7 +75,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onPostAuth(MojangAuthenticateEvent.Post e) {
-        if (!e.isSuccessful()) {
+        if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
             DiscordUtils.getManager().openPrivateChannel()
                     .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
                             .queue());

@@ -30,4 +30,7 @@ public class WhisperCommand extends SimpleCommand {
         }
         ReMinecraft.INSTANCE.minecraftClient.getSession().send(new ClientChatPacket(format));
     }
+
+
+
 }
