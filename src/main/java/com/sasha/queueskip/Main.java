@@ -1,5 +1,7 @@
 package com.sasha.queueskip;
 
+import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.*;
@@ -7,6 +9,7 @@ import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.api.event.ChatRecievedEvent;
+import com.sasha.reminecraft.api.event.ChildJoinEvent;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
 import com.sasha.reminecraft.api.event.PlayerDamagedEvent;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
@@ -111,6 +114,18 @@ public class Main extends RePlugin implements SimpleListener {
             });
             CONFIG.var_newUser = false;
         }
+    }
+
+    @SimpleEventHandler
+    public void onChildJoin(ChildJoinEvent e) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            this.getReMinecraft().sendToChildren(new ServerChatPacket(Message.fromString("\2476You have been connected to 2b2t via queueskip " + VERSION)));
+        }).start();
     }
 
     // to Color: hi there
