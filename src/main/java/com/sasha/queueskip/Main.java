@@ -57,6 +57,8 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(PositionCommand.class);
             COMMAND_PROCESSOR.register(HelpCommand.class);
             COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
+            COMMAND_PROCESSOR.register(AboutCommand.class);
+            ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
@@ -139,7 +141,6 @@ public class Main extends RePlugin implements SimpleListener {
                     ex.printStackTrace();
                 }
             });
-            return;
         }
     }
 
