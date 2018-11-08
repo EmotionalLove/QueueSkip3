@@ -3,7 +3,10 @@ package com.sasha.queueskip.command;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+@SimpleCommandInfo(description = "Enable or disable the queueskip service",
+syntax = {""})
 public class ToggleActiveCommand extends SimpleCommand {
 
     public ToggleActiveCommand() {

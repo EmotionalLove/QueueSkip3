@@ -4,9 +4,12 @@ import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+@SimpleCommandInfo(description = "View your position in the world",
+syntax = {""})
 public class PositionCommand extends SimpleCommand {
 
     public PositionCommand() {
@@ -24,8 +27,8 @@ public class PositionCommand extends SimpleCommand {
         DiscordUtils.recievedMessage.getChannel().sendMessage(
                 DiscordUtils.buildInfoEmbed("Position XYZ",
                         "**X** " + (int)ReClient.ReClientCache.INSTANCE.posX + "\n" +
-                        "**Y**" + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
-                        "**Z**" + (int) ReClient.ReClientCache.INSTANCE.posZ)
+                        "**Y** " + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
+                        "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ)
         ).queue();
     }
 }

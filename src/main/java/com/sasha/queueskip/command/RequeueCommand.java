@@ -3,7 +3,10 @@ package com.sasha.queueskip.command;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+@SimpleCommandInfo(description = "Relog into 2b2t",
+syntax = {""})
 public class RequeueCommand extends SimpleCommand {
     public RequeueCommand() {
         super("requeue");

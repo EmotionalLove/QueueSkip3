@@ -4,7 +4,10 @@ import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+@SimpleCommandInfo(description = "View information about the instance of queueskip",
+syntax = {""})
 public class AboutCommand extends SimpleCommand {
 
     public AboutCommand() {

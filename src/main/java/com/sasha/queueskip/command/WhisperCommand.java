@@ -5,7 +5,10 @@ import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.simplecmdsys.SimpleCommand;
+import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+@SimpleCommandInfo(description = "Send a whisper to another player on 2b2t",
+syntax = "<player> <message>")
 public class WhisperCommand extends SimpleCommand {
     public WhisperCommand() {
         super("msg");
