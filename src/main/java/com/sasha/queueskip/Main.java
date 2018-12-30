@@ -5,13 +5,14 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.*;
-import com.sasha.reminecraft.Logger;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
-import com.sasha.reminecraft.api.event.ChatRecievedEvent;
+import com.sasha.reminecraft.api.event.ChatReceivedEvent;
 import com.sasha.reminecraft.api.event.ChildJoinEvent;
 import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
 import com.sasha.reminecraft.api.event.PlayerDamagedEvent;
+import com.sasha.reminecraft.logging.ILogger;
+import com.sasha.reminecraft.logging.LoggerBuilder;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
@@ -27,7 +28,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     public static JDA Jda;
 
-    public static Logger logger = new Logger("QueueSkip3");
+    public static ILogger logger = LoggerBuilder.buildProperLogger("QueueSkip3");
     public static QSkipConfig CONFIG;
 
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
@@ -35,18 +36,22 @@ public class Main extends RePlugin implements SimpleListener {
     @Override
     public void onPluginInit() {
         INSTANCE = this;
-        this.getReMinecraft().EVENT_BUS.registerListener(this);
     }
 
     @Override
     public void onPluginEnable() {
+        this.getReMinecraft().EVENT_BUS.registerListener(this);
         logger.log("QueueSkip plugin is enabled!");
     }
 
     @Override
     public void onPluginDisable() {
-        Jda.shutdown();
         logger.logWarning("QueueSkip plugin is disabled!");
+    }
+
+    @Override
+    public void onPluginShutdown() {
+        Jda.shutdown();
     }
 
     @Override
@@ -71,19 +76,6 @@ public class Main extends RePlugin implements SimpleListener {
     public void registerConfig() {
         CONFIG = new QSkipConfig();
         this.getReMinecraft().configurations.add(CONFIG);
-    }
-
-    @SimpleEventHandler
-    public void onPostAuth(MojangAuthenticateEvent.Post e) {
-        if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
-            DiscordUtils.getManager().openPrivateChannel()
-                    .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
-                            .queue());
-        }
-    }
-
-    @SimpleEventHandler
-    public void onPreAuth(MojangAuthenticateEvent.Pre e) {
         if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
             logger.logError("Discord token isn't set!");
             this.getReMinecraft().stop();
@@ -103,6 +95,19 @@ public class Main extends RePlugin implements SimpleListener {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @SimpleEventHandler
+    public void onPostAuth(MojangAuthenticateEvent.Post e) {
+        if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
+            DiscordUtils.getManager().openPrivateChannel()
+                    .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
+                            .queue());
+        }
+    }
+
+    @SimpleEventHandler
+    public void onPreAuth(MojangAuthenticateEvent.Pre e) {
         if (!CONFIG.var_queueSkipEnabled) {
             logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
             e.setCancelled(true);
@@ -130,7 +135,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     // to Color: hi there
     @SimpleEventHandler
-    public void onChat(ChatRecievedEvent e) {
+    public void onChat(ChatReceivedEvent e) {
         if (isWhisperTo(e.getMessageText().toLowerCase())) {
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
