@@ -24,7 +24,7 @@ import java.io.IOException;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.0";
+    public static final String VERSION = "3.1";
 
     public static JDA Jda;
 
@@ -36,6 +36,7 @@ public class Main extends RePlugin implements SimpleListener {
     @Override
     public void onPluginInit() {
         INSTANCE = this;
+        logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
     }
 
     @Override
