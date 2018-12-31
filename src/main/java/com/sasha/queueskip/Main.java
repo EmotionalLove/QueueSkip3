@@ -37,12 +37,42 @@ public class Main extends RePlugin implements SimpleListener {
     public void onPluginInit() {
         INSTANCE = this;
         logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
+        this.getReMinecraft().EVENT_BUS.registerListener(this);
     }
 
     @Override
     public void onPluginEnable() {
-        this.getReMinecraft().EVENT_BUS.registerListener(this);
         logger.log("QueueSkip plugin is enabled!");
+        if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
+            logger.logError("Discord token isn't set!");
+            this.getReMinecraft().stop();
+        }
+        if (CONFIG.var_managerId.equalsIgnoreCase("[no default]")) {
+            logger.logError("Manager ID isn't set!");
+            this.getReMinecraft().stop();
+        }
+        if (Jda == null) {
+            try {
+                Jda = new JDABuilder(CONFIG.var_discordToken)
+                        .setEventManager(new AnnotatedEventManager())
+                        .addEventListener(new DiscordEvents())
+                        .buildBlocking();
+                if (CONFIG.var_newUser) {
+                    Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
+                        dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip",
+                                "View the ;help command for a list of commands.")).queue();
+                    }, fail -> {
+                        DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
+                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached, and their account credentials are invalid!")).submit();
+                        });
+                    });
+                    CONFIG.var_newUser = false;
+                }
+            } catch (LoginException | InterruptedException ex) {
+                logger.logError("Couldn't log into Discord. Is the token invalid?");
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -77,33 +107,19 @@ public class Main extends RePlugin implements SimpleListener {
     public void registerConfig() {
         CONFIG = new QSkipConfig();
         this.getReMinecraft().configurations.add(CONFIG);
-        if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
-            logger.logError("Discord token isn't set!");
-            this.getReMinecraft().stop();
-        }
-        if (CONFIG.var_managerId.equalsIgnoreCase("[no default]")) {
-            logger.logError("Manager ID isn't set!");
-            this.getReMinecraft().stop();
-        }
-        if (Jda == null) {
-            try {
-                Jda = new JDABuilder(CONFIG.var_discordToken)
-                        .setEventManager(new AnnotatedEventManager())
-                        .addEventListener(new DiscordEvents())
-                        .buildBlocking();
-            } catch (LoginException | InterruptedException ex) {
-                logger.logError("Couldn't log into Discord. Is the token invalid?");
-                ex.printStackTrace();
-            }
-        }
     }
 
     @SimpleEventHandler
     public void onPostAuth(MojangAuthenticateEvent.Post e) {
         if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
+            e.setCancelled(true);
             DiscordUtils.getManager().openPrivateChannel()
                     .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
-                            .queue());
+                            .queue(), fail -> {
+                        DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
+                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached, and their account credentials are invalid!")).submit();
+                        });
+                    });
         }
     }
 
@@ -112,13 +128,6 @@ public class Main extends RePlugin implements SimpleListener {
         if (!CONFIG.var_queueSkipEnabled) {
             logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
             e.setCancelled(true);
-        }
-        if (CONFIG.var_newUser) {
-            Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
-                dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to queueskip",
-                        "View the ;help command for a list of commands.")).queue();
-            });
-            CONFIG.var_newUser = false;
         }
     }
 
