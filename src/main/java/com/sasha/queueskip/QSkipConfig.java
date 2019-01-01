@@ -9,6 +9,7 @@ public class QSkipConfig extends Configuration {
     @ConfigSetting public String var_adminId = "483665844866514944";
     @ConfigSetting public boolean var_queueSkipEnabled = true;
     @ConfigSetting public boolean var_safeMode = false;
+    @ConfigSetting public boolean var_inRange = true;
     @ConfigSetting public boolean var_newUser = true;
 
 

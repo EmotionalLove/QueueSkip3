@@ -7,10 +7,7 @@ import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.command.*;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
-import com.sasha.reminecraft.api.event.ChatReceivedEvent;
-import com.sasha.reminecraft.api.event.ChildJoinEvent;
-import com.sasha.reminecraft.api.event.MojangAuthenticateEvent;
-import com.sasha.reminecraft.api.event.PlayerDamagedEvent;
+import com.sasha.reminecraft.api.event.*;
 import com.sasha.reminecraft.logging.ILogger;
 import com.sasha.reminecraft.logging.LoggerBuilder;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
@@ -24,7 +21,7 @@ import java.io.IOException;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.1";
+    public static final String VERSION = "3.1.1";
 
     public static JDA Jda;
 
@@ -97,6 +94,7 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(HelpCommand.class);
             COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
             COMMAND_PROCESSOR.register(AboutCommand.class);
+            COMMAND_PROCESSOR.register(ToggleInRangeNotificationsCommand.class);
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
@@ -120,6 +118,15 @@ public class Main extends RePlugin implements SimpleListener {
                             a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached, and their account credentials are invalid!")).submit();
                         });
                     });
+        }
+    }
+
+    @SimpleEventHandler
+    public void onPlayerVisible(EntityInRangeEvent.Player e) {
+        if (CONFIG.var_inRange && isConnected() && !this.getReMinecraft().areChildrenConnected()) {
+             DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
+                 dm.sendMessage(DiscordUtils.buildInfoEmbed("A player has entered visible range!", e.getName() + " has entered your account's visible range!")).submit();
+             });
         }
     }
 
