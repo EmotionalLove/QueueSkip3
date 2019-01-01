@@ -38,11 +38,6 @@ public class Main extends RePlugin implements SimpleListener {
         INSTANCE = this;
         logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
         this.getReMinecraft().EVENT_BUS.registerListener(this);
-    }
-
-    @Override
-    public void onPluginEnable() {
-        logger.log("QueueSkip plugin is enabled!");
         if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
             logger.logError("Discord token isn't set!");
             this.getReMinecraft().stop();
@@ -73,6 +68,11 @@ public class Main extends RePlugin implements SimpleListener {
                 ex.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onPluginEnable() {
+        logger.log("QueueSkip plugin is enabled!");
     }
 
     @Override
