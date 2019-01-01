@@ -18,11 +18,11 @@ public class ToggleInRangeNotificationsCommand extends SimpleCommand {
         switch (action) {
             case ENABLING:
                 DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("In-range notifications enabled", "You will now receive Discord alerts if a player comes into range.")).queue();
-                Main.CONFIG.var_safeMode = true;
+                Main.CONFIG.var_inRange = true;
                 break;
             case DISABLING:
                 DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("In-range notifications disabled", "You will no longer receive Discord alerts if a player comes into range.")).queue();
-                Main.CONFIG.var_safeMode = false;
+                Main.CONFIG.var_inRange = false;
                 break;
         }
     }
