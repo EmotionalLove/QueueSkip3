@@ -63,7 +63,7 @@ public class Main extends RePlugin implements SimpleListener {
                                 "View the ;help command for a list of commands.")).queue();
                     }, fail -> {
                         DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
-                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached, and their account credentials are invalid!")).submit();
+                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached!")).submit();
                         });
                     });
                     CONFIG.var_newUser = false;
