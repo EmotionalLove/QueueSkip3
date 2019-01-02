@@ -17,11 +17,14 @@ import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.1.1";
+    public static final String VERSION = "3.1.2";
 
     public static JDA Jda;
 
@@ -29,6 +32,10 @@ public class Main extends RePlugin implements SimpleListener {
     public static QSkipConfig CONFIG;
 
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
+
+    public static long lastMsg = System.currentTimeMillis();
+
+    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
     @Override
     public void onPluginInit() {
@@ -69,11 +76,17 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginEnable() {
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            if (System.currentTimeMillis() - lastMsg >= 300000L) {
+                this.getReMinecraft().reLaunch();
+            }
+        }, 5, 5, TimeUnit.SECONDS);
         logger.log("QueueSkip plugin is enabled!");
     }
 
     @Override
     public void onPluginDisable() {
+        scheduledExecutorService.shutdown();
         logger.logWarning("QueueSkip plugin is disabled!");
     }
 
@@ -153,6 +166,7 @@ public class Main extends RePlugin implements SimpleListener {
     // to Color: hi there
     @SimpleEventHandler
     public void onChat(ChatReceivedEvent e) {
+        lastMsg = System.currentTimeMillis();
         if (isWhisperTo(e.getMessageText().toLowerCase())) {
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
