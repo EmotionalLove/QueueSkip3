@@ -111,6 +111,7 @@ public class Main extends RePlugin implements SimpleListener {
             COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
             COMMAND_PROCESSOR.register(AboutCommand.class);
             COMMAND_PROCESSOR.register(ToggleInRangeNotificationsCommand.class);
+            COMMAND_PROCESSOR.register(ToggleDebugCommand.class);
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
