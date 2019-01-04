@@ -18,9 +18,15 @@ public class TabCommand extends SimpleCommand {
 
     @Override
     public void onCommand() {
-        if (!Main.isConnected()) {
+        if (!Main.CONFIG.var_queueSkipEnabled) {
             DiscordUtils.recievedMessage.getChannel().sendMessage(
                     DiscordUtils.buildErrorEmbed("You cannot view the tablist because QueueSkip is disabled.")
+            ).queue();
+            return;
+        }
+        if (!Main.isConnected()) {
+            DiscordUtils.recievedMessage.getChannel().sendMessage(
+                    DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. This is likely a bug. Try using the ;requeue command.")
             ).queue();
             return;
         }
