@@ -11,6 +11,7 @@ public class QSkipConfig extends Configuration {
     @ConfigSetting public boolean var_safeMode = false;
     @ConfigSetting public boolean var_inRange = true;
     @ConfigSetting public boolean var_newUser = true;
+    @ConfigSetting public boolean var_debug = false;
 
 
     QSkipConfig() {

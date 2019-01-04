@@ -80,4 +80,11 @@ public abstract class DiscordUtils {
         return uuid;
     }
 
+    public static void sendDebug(String msg) {
+        if (!Main.CONFIG.var_debug) return;
+        getManager().openPrivateChannel().queue(dm -> {
+            dm.sendMessage("(debug) " + msg).submit();
+        });
+    }
+
 }

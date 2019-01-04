@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.1.2";
+    public static final String VERSION = "3.1.3";
 
     public static JDA Jda;
 
@@ -71,13 +71,16 @@ public class Main extends RePlugin implements SimpleListener {
                 logger.logError("Couldn't log into Discord. Is the token invalid?");
                 ex.printStackTrace();
             }
+
         }
     }
 
     @Override
     public void onPluginEnable() {
         scheduledExecutorService.scheduleAtFixedRate(() -> {
+            DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
             if (System.currentTimeMillis() - lastMsg >= 300000L) {
+                DiscordUtils.sendDebug("over 5 mins since last chat... relaunching");
                 this.getReMinecraft().reLaunch();
             }
         }, 5, 5, TimeUnit.SECONDS);
@@ -122,6 +125,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onPostAuth(MojangAuthenticateEvent.Post e) {
+        DiscordUtils.sendDebug("authentication with mojang completed.");
         if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
             e.setCancelled(true);
             DiscordUtils.getManager().openPrivateChannel()
@@ -145,6 +149,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onPreAuth(MojangAuthenticateEvent.Pre e) {
+        DiscordUtils.sendDebug("authentication with mojang requested.");
         if (!CONFIG.var_queueSkipEnabled) {
             logger.logWarning("Queue Skip is disabled, RE:Minecraft will not continue.");
             e.setCancelled(true);
@@ -153,6 +158,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onChildJoin(ChildJoinEvent e) {
+        DiscordUtils.sendDebug("child user joined qskip server");
         new Thread(() -> {
             try {
                 Thread.sleep(5000);
@@ -166,8 +172,10 @@ public class Main extends RePlugin implements SimpleListener {
     // to Color: hi there
     @SimpleEventHandler
     public void onChat(ChatReceivedEvent e) {
+        DiscordUtils.sendDebug("chat message received for processing.");
         lastMsg = System.currentTimeMillis();
         if (isWhisperTo(e.getMessageText().toLowerCase())) {
+            DiscordUtils.sendDebug("is a whisper to msg.");
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
@@ -182,6 +190,7 @@ public class Main extends RePlugin implements SimpleListener {
             return;
         }
         if (isWhisperFrom(e.getMessageText().toLowerCase())) {
+            DiscordUtils.sendDebug("is a whisper from msg.");
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
             DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
@@ -197,6 +206,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @SimpleEventHandler
     public void onHurt(PlayerDamagedEvent e) {
+        DiscordUtils.sendDebug("player health updated.");
         if (isConnected() && !this.getReMinecraft().areChildrenConnected() && CONFIG.var_safeMode) {
             DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
                 if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
