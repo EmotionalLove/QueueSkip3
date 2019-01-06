@@ -81,8 +81,9 @@ public class Main extends RePlugin implements SimpleListener {
         if (!isRunning) {
             scheduledExecutorService.scheduleAtFixedRate(() -> {
                 DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
-                if (System.currentTimeMillis() - lastMsg >= 300000L) {
+                if (System.currentTimeMillis() - lastMsg >= 300000L && isConnected()) {
                     DiscordUtils.sendDebug("over 5 mins since last chat... relaunching");
+                    lastMsg = System.currentTimeMillis();
                     this.getReMinecraft().reLaunch();
                 }
             }, 5, 5, TimeUnit.SECONDS);
