@@ -35,7 +35,8 @@ public class Main extends RePlugin implements SimpleListener {
 
     public static long lastMsg = System.currentTimeMillis();
 
-    private static ScheduledExecutorService scheduledExecutorService;
+    private boolean isRunning = false;
+    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
     @Override
     public void onPluginInit() {
@@ -77,20 +78,21 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginEnable() {
-        scheduledExecutorService = Executors.newScheduledThreadPool(2);
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
-            DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
-            if (System.currentTimeMillis() - lastMsg >= 300000L) {
-                DiscordUtils.sendDebug("over 5 mins since last chat... relaunching");
-                this.getReMinecraft().reLaunch();
-            }
-        }, 5, 5, TimeUnit.SECONDS);
+        if (!isRunning) {
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+                DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
+                if (System.currentTimeMillis() - lastMsg >= 300000L) {
+                    DiscordUtils.sendDebug("over 5 mins since last chat... relaunching");
+                    this.getReMinecraft().reLaunch();
+                }
+            }, 5, 5, TimeUnit.SECONDS);
+        }
+        isRunning = true;
         logger.log("QueueSkip plugin is enabled!");
     }
 
     @Override
     public void onPluginDisable() {
-        scheduledExecutorService.shutdown();
         logger.logWarning("QueueSkip plugin is disabled!");
     }
 
