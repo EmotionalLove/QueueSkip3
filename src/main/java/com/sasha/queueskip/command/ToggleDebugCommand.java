@@ -5,11 +5,11 @@ import com.sasha.queueskip.Main;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
 
-@SimpleCommandInfo(description = "Toggle \"player in range\" notifications", syntax = {""})
+@SimpleCommandInfo(description = "Toggle debug msgs", syntax = {""})
 public class ToggleDebugCommand extends SimpleCommand {
 
     public ToggleDebugCommand() {
-        super("inrange");
+        super("debug");
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 public class Main extends RePlugin implements SimpleListener {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.1.3";
+    public static final String VERSION = "3.1.4";
 
     public static JDA Jda;
 
@@ -35,7 +35,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     public static long lastMsg = System.currentTimeMillis();
 
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
+    private static ScheduledExecutorService scheduledExecutorService;
 
     @Override
     public void onPluginInit() {
@@ -77,6 +77,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginEnable() {
+        scheduledExecutorService = Executors.newScheduledThreadPool(2);
         scheduledExecutorService.scheduleAtFixedRate(() -> {
             DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
             if (System.currentTimeMillis() - lastMsg >= 300000L) {
