@@ -1,5 +1,7 @@
-package com.sasha.queueskip;
+package com.sasha.queueskip.event;
 
+import com.sasha.queueskip.DiscordUtils;
+import com.sasha.queueskip.Main;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
