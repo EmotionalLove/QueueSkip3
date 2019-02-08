@@ -30,6 +30,7 @@ public class Main extends RePlugin {
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
 
     public static long lastMsg = System.currentTimeMillis();
+    public static long uptime;
 
     private boolean isRunning = false;
     private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
@@ -37,6 +38,7 @@ public class Main extends RePlugin {
     @Override
     public void onPluginInit() {
         INSTANCE = this;
+        uptime = System.currentTimeMillis();
         logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
         this.getReMinecraft().EVENT_BUS.registerListener(new MinecraftEvents(this));
         if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
@@ -112,6 +114,7 @@ public class Main extends RePlugin {
             COMMAND_PROCESSOR.register(AboutCommand.class);
             COMMAND_PROCESSOR.register(ToggleInRangeNotificationsCommand.class);
             COMMAND_PROCESSOR.register(ToggleDebugCommand.class);
+            COMMAND_PROCESSOR.register(UptimeCommand.class);
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
