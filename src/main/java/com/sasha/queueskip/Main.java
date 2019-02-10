@@ -115,6 +115,7 @@ public class Main extends RePlugin {
             COMMAND_PROCESSOR.register(ToggleInRangeNotificationsCommand.class);
             COMMAND_PROCESSOR.register(ToggleDebugCommand.class);
             COMMAND_PROCESSOR.register(UptimeCommand.class);
+            COMMAND_PROCESSOR.register(ToggleConnectingAlertCommand.class);
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
