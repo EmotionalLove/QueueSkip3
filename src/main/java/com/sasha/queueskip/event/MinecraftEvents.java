@@ -76,7 +76,7 @@ public class MinecraftEvents implements SimpleListener {
         if (e.getMessageText().toLowerCase().contains("connecting to the server")) {
             DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
                 pm.sendMessage
-                        (DiscordUtils.buildInfoEmbed("Connected to 2b2t", "Your account has completed the queuing process")).queue();
+                        (DiscordUtils.buildInfoEmbed("Connecting to 2b2t", "Your account has completed the queuing process")).queue();
             });
             return;
         }
