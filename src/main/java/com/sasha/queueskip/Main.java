@@ -13,9 +13,6 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Main extends RePlugin {
 
@@ -29,11 +26,7 @@ public class Main extends RePlugin {
 
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
 
-    public static long lastMsg = System.currentTimeMillis();
     public static long uptime;
-
-    private boolean isRunning = false;
-    private static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(2);
 
     @Override
     public void onPluginInit() {
@@ -76,17 +69,6 @@ public class Main extends RePlugin {
 
     @Override
     public void onPluginEnable() {
-        if (!isRunning) {
-            scheduledExecutorService.scheduleAtFixedRate(() -> {
-                DiscordUtils.sendDebug(System.currentTimeMillis() - lastMsg + "ms since last chat msg");
-                if (System.currentTimeMillis() - lastMsg >= 300000L && isConnected()) {
-                    DiscordUtils.sendDebug("over 5 mins since last chat... relaunching");
-                    lastMsg = System.currentTimeMillis();
-                    this.getReMinecraft().reLaunch();
-                }
-            }, 5, 5, TimeUnit.SECONDS);
-        }
-        isRunning = true;
         logger.log("QueueSkip plugin is enabled!");
     }
 
@@ -135,6 +117,10 @@ public class Main extends RePlugin {
 
     public static boolean isConnected() {
         return Main.CONFIG.var_queueSkipEnabled && Main.INSTANCE.getReMinecraft().minecraftClient.getSession().isConnected();
+    }
+
+    public static boolean is2b2tDead(String msg) {
+        return msg.toLowerCase().startsWith("exception connecting:");
     }
 
     public boolean isWhisperTo(String s) {

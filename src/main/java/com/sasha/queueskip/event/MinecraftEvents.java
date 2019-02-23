@@ -71,8 +71,14 @@ public class MinecraftEvents implements SimpleListener {
     // to Color: hi there
     @SimpleEventHandler
     public void onChat(ChatReceivedEvent e) {
-        DiscordUtils.sendDebug("chat message received for processing.");
-        Main.lastMsg = System.currentTimeMillis();
+        if (Main.is2b2tDead(e.getMessageText())) {
+            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
+                pm.sendMessage(DiscordUtils.buildErrorEmbed(e.getMessageText() + "\n\nDue to the above exception, QueueSkip3 is automatically requeuing")).queue(x -> {
+                    Main.INSTANCE.getReMinecraft().reLaunch();
+                });
+            });
+            return;
+        }
         if (e.getMessageText().toLowerCase().contains("connecting to the server")) {
             DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
                 pm.sendMessage
