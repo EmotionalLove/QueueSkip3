@@ -30,17 +30,26 @@ public class TabCommand extends SimpleCommand {
             ).queue();
             return;
         }
+        String tab = getTabText(true);
+        if (tab.length() >= 2000) tab = getTabText(false);
+        DiscordUtils.recievedMessage.getChannel().sendMessage(tab).queue();
+    }
+
+    public String getTabText(boolean includePlayers) {
         StringBuilder builder = new StringBuilder("```\n" + ReClient.ReClientCache.INSTANCE.tabHeader.getFullText().replaceAll("§.", "") + "\n");
         AtomicInteger i = new AtomicInteger();
         ReClient.ReClientCache.INSTANCE.playerListEntries.forEach(entry -> {
             if (i.get() == 0) {
-                builder.append(entry.getProfile().getName());
+                if (includePlayers) builder.append(entry.getProfile().getName());
                 i.getAndIncrement();
                 return;
             }
-            builder.append(", ").append(entry.getProfile().getName());
+            if (includePlayers) builder.append(", ").append(entry.getProfile().getName());
+            i.getAndIncrement();
         });
+        if (!includePlayers) builder.append(i.get()).append(" players not shown");
         builder.append("\n").append(ReClient.ReClientCache.INSTANCE.tabFooter.getFullText().replaceAll("§.", "")).append("\n```");
-        DiscordUtils.recievedMessage.getChannel().sendMessage(builder.toString()).queue();
+        return builder.toString();
     }
+
 }
