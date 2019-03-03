@@ -30,9 +30,9 @@ public class PositionCommand extends SimpleCommand {
                     DiscordUtils.buildInfoEmbed("Player Status",
                             "**X** " + (int) ReClient.ReClientCache.INSTANCE.posX + "\n" +
                                     "**Y** " + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
-                                    "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ) + "\n" +
+                                    "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ + "\n" +
                             "**Health** " + ReClient.ReClientCache.INSTANCE.health / 2 + " hearts" + "\n" +
-                            "**Hunger** " + ReClient.ReClientCache.INSTANCE.food / (float) 2 + " hunger thingies"
+                                    "**Hunger** " + ReClient.ReClientCache.INSTANCE.food / (float) 2 + " hunger thingies")
             ).queue();
         } catch (Exception e) {
             StringWriter writer = new StringWriter();
