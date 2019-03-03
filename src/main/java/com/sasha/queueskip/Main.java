@@ -17,7 +17,7 @@ import javax.security.auth.login.LoginException;
 public class Main extends RePlugin {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.1.5";
+    public static final String VERSION = "3.1.6";
 
     public static JDA Jda;
 
@@ -51,7 +51,7 @@ public class Main extends RePlugin {
                 if (CONFIG.var_newUser) {
                     Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
                         dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip",
-                                "View the ;help command for a list of commands.")).queue();
+                                "**Please read the #queueskip-help chanel in the QueueSkip Discord server**. You can also view the ;help command for a list of commands.")).queue();
                     }, fail -> {
                         DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
                             a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached!")).submit();

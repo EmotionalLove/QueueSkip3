@@ -6,29 +6,42 @@ import com.sasha.reminecraft.client.ReClient;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
-@SimpleCommandInfo(description = "View your position in the world",
+@SimpleCommandInfo(description = "View your position in the world, and other player stats.",
 syntax = {""})
 public class PositionCommand extends SimpleCommand {
 
     public PositionCommand() {
-        super("pos");
+        super("info");
     }
 
     @Override
     public void onCommand() {
-        if (!Main.isConnected()) {
+        try {
+            if (!Main.isConnected()) {
+                DiscordUtils.recievedMessage.getChannel().sendMessage(
+                        DiscordUtils.buildErrorEmbed("You cannot view your position because QueueSkip is disabled.")
+                ).queue();
+                return;
+            }
             DiscordUtils.recievedMessage.getChannel().sendMessage(
-                    DiscordUtils.buildErrorEmbed("You cannot view your position because QueueSkip is disabled.")
+                    DiscordUtils.buildInfoEmbed("Player Status",
+                            "**X** " + (int) ReClient.ReClientCache.INSTANCE.posX + "\n" +
+                                    "**Y** " + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
+                                    "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ) + "\n" +
+                            "**Health** " + ReClient.ReClientCache.INSTANCE.health / 2 + " hearts" + "\n" +
+                            "**Hunger** " + ReClient.ReClientCache.INSTANCE.food / (float) 2 + " hunger thingies"
             ).queue();
-            return;
+        } catch (Exception e) {
+            StringWriter writer = new StringWriter();
+            PrintWriter writer1 = new PrintWriter(writer);
+            e.printStackTrace(writer1);
+            DiscordUtils.getAdministrator().openPrivateChannel().queue(dm -> {
+                dm.sendMessage(DiscordUtils.buildErrorEmbed(writer.toString())).submit();
+            });
         }
-        DiscordUtils.recievedMessage.getChannel().sendMessage(
-                DiscordUtils.buildInfoEmbed("Position XYZ",
-                        "**X** " + (int)ReClient.ReClientCache.INSTANCE.posX + "\n" +
-                        "**Y** " + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
-                        "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ)
-        ).queue();
+
     }
 }

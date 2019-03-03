@@ -6,6 +6,8 @@ import com.sasha.reminecraft.client.ReClient;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SimpleCommandInfo(description = "View the server tablist",
@@ -18,21 +20,31 @@ public class TabCommand extends SimpleCommand {
 
     @Override
     public void onCommand() {
-        if (!Main.CONFIG.var_queueSkipEnabled) {
-            DiscordUtils.recievedMessage.getChannel().sendMessage(
-                    DiscordUtils.buildErrorEmbed("You cannot view the tablist because QueueSkip is disabled.")
-            ).queue();
-            return;
+        try {
+            if (!Main.CONFIG.var_queueSkipEnabled) {
+                DiscordUtils.recievedMessage.getChannel().sendMessage(
+                        DiscordUtils.buildErrorEmbed("You cannot view the tablist because QueueSkip is disabled.")
+                ).queue();
+                return;
+            }
+            if (!Main.isConnected()) {
+                DiscordUtils.recievedMessage.getChannel().sendMessage(
+                        DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. This is likely a bug. Try using the ;requeue command.")
+                ).queue();
+                return;
+            }
+            String tab = getTabText(true);
+            if (tab.length() >= 2000) tab = getTabText(false);
+            DiscordUtils.recievedMessage.getChannel().sendMessage(tab).queue();
+        } catch (Exception e) {
+            StringWriter writer = new StringWriter();
+            PrintWriter writer1 = new PrintWriter(writer);
+            e.printStackTrace(writer1);
+            DiscordUtils.getAdministrator().openPrivateChannel().queue(dm -> {
+                dm.sendMessage(DiscordUtils.buildErrorEmbed(writer.toString())).submit();
+            });
         }
-        if (!Main.isConnected()) {
-            DiscordUtils.recievedMessage.getChannel().sendMessage(
-                    DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. This is likely a bug. Try using the ;requeue command.")
-            ).queue();
-            return;
-        }
-        String tab = getTabText(true);
-        if (tab.length() >= 2000) tab = getTabText(false);
-        DiscordUtils.recievedMessage.getChannel().sendMessage(tab).queue();
+
     }
 
     public String getTabText(boolean includePlayers) {

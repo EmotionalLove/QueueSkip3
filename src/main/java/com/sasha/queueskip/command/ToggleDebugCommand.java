@@ -5,6 +5,9 @@ import com.sasha.queueskip.Main;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 @SimpleCommandInfo(description = "Toggle debug msgs", syntax = {""})
 public class ToggleDebugCommand extends SimpleCommand {
 
@@ -14,16 +17,26 @@ public class ToggleDebugCommand extends SimpleCommand {
 
     @Override
     public void onCommand() {
-        Action action = Main.CONFIG.var_debug ? Action.DISABLING : Action.ENABLING;
-        switch (action) {
-            case ENABLING:
-                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("Debug notifications enabled", "Mm.")).queue();
-                Main.CONFIG.var_debug = true;
-                break;
-            case DISABLING:
-                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("Debug notifications disabled", "Mm.")).queue();
-                Main.CONFIG.var_debug = false;
-                break;
+        try {
+            Action action = Main.CONFIG.var_debug ? Action.DISABLING : Action.ENABLING;
+            switch (action) {
+                case ENABLING:
+                    DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("Debug notifications enabled", "Mm.")).queue();
+                    Main.CONFIG.var_debug = true;
+                    break;
+                case DISABLING:
+                    DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildInfoEmbed("Debug notifications disabled", "Mm.")).queue();
+                    Main.CONFIG.var_debug = false;
+                    break;
+            }
+        } catch (Exception e) {
+            StringWriter writer = new StringWriter();
+            PrintWriter writer1 = new PrintWriter(writer);
+            e.printStackTrace(writer1);
+            DiscordUtils.getAdministrator().openPrivateChannel().queue(dm -> {
+                dm.sendMessage(DiscordUtils.buildErrorEmbed(writer.toString())).submit();
+            });
         }
+
     }
 }

@@ -2,6 +2,7 @@ package com.sasha.queueskip.event;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
+import net.dv8tion.jda.core.events.ReconnectedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import net.dv8tion.jda.core.hooks.SubscribeEvent;
@@ -21,5 +22,10 @@ public class DiscordEvents extends ListenerAdapter {
             });
 
         }
+    }
+
+    @SubscribeEvent
+    public void onDiscordDed(ReconnectedEvent e) {
+        Main.INSTANCE.getReMinecraft().reLaunch();
     }
 }

@@ -15,7 +15,7 @@ public class UptimeCommand extends SimpleCommand {
     @Override
     public void onCommand() {
         DiscordUtils.recievedMessage.getChannel()
-                .sendMessage("```\nThe software has been running for " + formatUptime(System.currentTimeMillis(), Main.uptime) + " without a reboot.").submit();
+                .sendMessage("```\nThe software has been running for " + formatUptime(System.currentTimeMillis(), Main.uptime) + " without a reboot.\n```").submit();
     }
 
     private static String formatUptime(long then, long now) {
