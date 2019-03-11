@@ -13,6 +13,9 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends RePlugin {
 
@@ -49,6 +52,7 @@ public class Main extends RePlugin {
                         .addEventListener(new DiscordEvents())
                         .buildBlocking();
                 if (CONFIG.var_newUser) {
+                    CONFIG.var_subscription = System.currentTimeMillis();
                     Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
                         dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip",
                                 "**Please read the #queueskip-help chanel in the QueueSkip Discord server**. You can also view the ;help command for a list of commands.")).queue();
@@ -59,11 +63,23 @@ public class Main extends RePlugin {
                     });
                     CONFIG.var_newUser = false;
                 }
+                ScheduledExecutorService sc = Executors.newScheduledThreadPool(2);
+                sc.scheduleAtFixedRate(() -> shouldNotifyRenew(CONFIG.var_subscription), 5L, 5L, TimeUnit.SECONDS);
             } catch (LoginException | InterruptedException ex) {
                 logger.logError("Couldn't log into Discord. Is the token invalid?");
                 ex.printStackTrace();
             }
 
+        }
+    }
+
+    public void shouldNotifyRenew(long lastRenewed) {
+        if (lastRenewed == -1L) return;
+        if (System.currentTimeMillis() - lastRenewed <= 2.592e+9) {
+            Jda.getUserById(CONFIG.var_adminId).openPrivateChannel().queue(dm -> {
+                dm.sendMessage(Jda.getUserById(CONFIG.var_managerId).getName() + " needs to renew!!").submit();
+                CONFIG.var_subscription = System.currentTimeMillis();
+            });
         }
     }
 
