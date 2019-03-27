@@ -8,6 +8,8 @@ import com.sasha.simplecmdsys.SimpleCommandInfo;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import static com.sasha.queueskip.Main.LANG_MANAGER;
+
 @SimpleCommandInfo(description = "Log into a Mojang account", syntax = {"<email> <password>"})
 public class LoginCommand extends SimpleCommand {
 
@@ -19,7 +21,7 @@ public class LoginCommand extends SimpleCommand {
     public void onCommand() {
         try {
             if (this.getArguments() == null || this.getArguments().length != 2) {
-                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed("Invalid arguments!")).queue();
+                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed(LANG_MANAGER.resolve("args.err"))).queue();
                 return;
             }
             String email = this.getArguments()[0];

@@ -3,6 +3,8 @@ package com.sasha.queueskip;
 import com.sasha.queueskip.command.*;
 import com.sasha.queueskip.event.DiscordEvents;
 import com.sasha.queueskip.event.MinecraftEvents;
+import com.sasha.queueskip.localisation.EnumLocale;
+import com.sasha.queueskip.localisation.LocalisedResponseManager;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.logging.ILogger;
@@ -28,12 +30,18 @@ public class Main extends RePlugin {
     public static QSkipConfig CONFIG;
 
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
+    public static final LocalisedResponseManager LANG_MANAGER = new LocalisedResponseManager();
 
     public static long uptime;
 
     @Override
     public void onPluginInit() {
         INSTANCE = this;
+        LANG_MANAGER.registerLocalisedResponse(EnumLocale.ENG, "welcome.title", "Welcome to QueueSkip " + VERSION);
+        LANG_MANAGER.registerLocalisedResponse(EnumLocale.SPANISH, "welcome.title", "Welcome to QueueSkip " + VERSION);
+        LANG_MANAGER.registerLocalisedResponse(EnumLocale.FRENCH, "welcome.title", "Welcome to QueueSkip " + VERSION);
+        LANG_MANAGER.registerLocalisedResponse(EnumLocale.ENG, "welcome.body", "**Please read the #queueskip-help chanel in the QueueSkip Discord server**. You can also view the ;help command for a list of commands.");
+        LANG_MANAGER.registerLocalisedResponse(EnumLocale.ENG, "args.err", "Invalid arguments!");
         uptime = System.currentTimeMillis();
         logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
         this.getReMinecraft().EVENT_BUS.registerListener(new MinecraftEvents(this));
@@ -54,8 +62,8 @@ public class Main extends RePlugin {
                 if (CONFIG.var_newUser) {
                     CONFIG.var_subscription = System.currentTimeMillis();
                     Jda.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
-                        dm.sendMessage(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip",
-                                "**Please read the #queueskip-help chanel in the QueueSkip Discord server**. You can also view the ;help command for a list of commands.")).queue();
+                        dm.sendMessage(DiscordUtils.buildInfoEmbed(LANG_MANAGER.resolve("welcome.title"),
+                                LANG_MANAGER.resolve("welcome.body"))).queue();
                     }, fail -> {
                         DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
                             a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached!")).submit();
