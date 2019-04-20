@@ -10,10 +10,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "View your position in the world, and other player stats.",
-syntax = {""})
-public class PositionCommand extends SimpleCommand {
+        syntax = {""})
+public class InfoCommand extends SimpleCommand {
 
-    public PositionCommand() {
+    public InfoCommand() {
         super("info");
     }
 
@@ -31,7 +31,7 @@ public class PositionCommand extends SimpleCommand {
                             "**X** " + (int) ReClient.ReClientCache.INSTANCE.posX + "\n" +
                                     "**Y** " + (int) ReClient.ReClientCache.INSTANCE.posY + "\n" +
                                     "**Z** " + (int) ReClient.ReClientCache.INSTANCE.posZ + "\n" +
-                            "**Health** " + ReClient.ReClientCache.INSTANCE.health / 2 + " hearts" + "\n" +
+                                    "**Health** " + ReClient.ReClientCache.INSTANCE.health / 2 + " hearts" + "\n" +
                                     "**Hunger** " + ReClient.ReClientCache.INSTANCE.food / (float) 2 + " hunger thingies")
             ).queue();
         } catch (Exception e) {

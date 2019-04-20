@@ -64,7 +64,7 @@ public class MinecraftEvents implements SimpleListener {
             } catch (InterruptedException e1) {
                 e1.printStackTrace();
             }
-            qskip.getReMinecraft().sendToChildren(new ServerChatPacket(Message.fromString("\2476You have been connected to 2b2t via queueskip " + Main.VERSION)));
+            qskip.getReMinecraft().sendToChildren(new ServerChatPacket(Message.fromString("\2476You have been connected to 2b2t using queueskip " + Main.VERSION)));
         }).start();
     }
 
@@ -122,6 +122,7 @@ public class MinecraftEvents implements SimpleListener {
         if (isConnected() && !qskip.getReMinecraft().areChildrenConnected() && CONFIG.var_safeMode) {
             DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
                 if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
+                if (e.getNewHealth() > 7f) return;
                 dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + qskip.asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
             });
         }

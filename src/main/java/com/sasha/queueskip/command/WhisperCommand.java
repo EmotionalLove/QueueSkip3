@@ -23,7 +23,7 @@ public class WhisperCommand extends SimpleCommand {
     public void onCommand() {
         try {
             if (this.getArguments() == null || this.getArguments().length != 2) {
-                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed(LANG_MANAGER.resolve("args.err"))).queue();
+                DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed(LANG_MANAGER.resolve("args.err") + "\nexample: ';msg SashaTH \"Girl youre fucking gay\"'")).queue();
                 return;
             }
             if (!Main.isConnected()) {

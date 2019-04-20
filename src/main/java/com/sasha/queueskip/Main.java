@@ -114,7 +114,7 @@ public class Main extends RePlugin {
             COMMAND_PROCESSOR.register(RequeueCommand.class);
             COMMAND_PROCESSOR.register(WhisperCommand.class);
             COMMAND_PROCESSOR.register(TabCommand.class);
-            COMMAND_PROCESSOR.register(PositionCommand.class);
+            COMMAND_PROCESSOR.register(InfoCommand.class);
             COMMAND_PROCESSOR.register(HelpCommand.class);
             COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
             COMMAND_PROCESSOR.register(AboutCommand.class);
