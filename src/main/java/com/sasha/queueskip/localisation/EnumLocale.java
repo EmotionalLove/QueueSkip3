@@ -1,5 +1,5 @@
 package com.sasha.queueskip.localisation;
 
 public enum EnumLocale {
-    ENG, JAPANESE, SPANISH, FRENCH
+    ENG, JAPANESE, SPANISH, FRENCH, DUTCH
 }
