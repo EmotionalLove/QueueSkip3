@@ -29,22 +29,14 @@ public class MinecraftEvents implements SimpleListener {
         DiscordUtils.sendDebug("authentication with mojang completed.");
         if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
             e.setCancelled(true);
-            DiscordUtils.getManager().openPrivateChannel()
-                    .queue(dm -> dm.sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!"))
-                            .queue(), fail -> {
-                        DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
-                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached, and their account credentials are invalid!")).submit();
-                        });
-                    });
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!")).queue();
         }
     }
 
     @SimpleEventHandler
     public void onPlayerVisible(EntityInRangeEvent.Player e) {
         if (CONFIG.var_inRange && isConnected() && !qskip.getReMinecraft().areChildrenConnected()) {
-            DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
-                dm.sendMessage(DiscordUtils.buildInfoEmbed("A player has entered visible range!", e.getName() + " has entered your account's visible range!")).submit();
-            });
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildInfoEmbed("A player has entered visible range!", e.getName() + " has entered your account's visible range!")).submit();
         }
     }
 
@@ -74,18 +66,13 @@ public class MinecraftEvents implements SimpleListener {
     @SimpleEventHandler
     public void onChat(ChatReceivedEvent e) {
         if (is2b2tDead(e.getMessageText())) {
-            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
-                pm.sendMessage(DiscordUtils.buildErrorEmbed(e.getMessageText() + "\n\nDue to the above exception, QueueSkip3 is automatically requeuing")).queue(x -> {
-                    Main.INSTANCE.getReMinecraft().reLaunch();
-                });
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildErrorEmbed(e.getMessageText() + "\n\nDue to the above exception, QueueSkip3 is automatically requeuing")).queue(x -> {
+                Main.INSTANCE.getReMinecraft().reLaunch();
             });
             return;
         }
         if (e.getMessageText().toLowerCase().contains("connecting to the server")) {
-            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
-                pm.sendMessage
-                        (DiscordUtils.buildInfoEmbed("Connecting to 2b2t", "Your account has completed the queuing process")).queue();
-            });
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildInfoEmbed("Connecting to 2b2t", "Your account has completed the queuing process")).queue();
             return;
         }
         if (Util.isWhisperTo(e.getMessageText().toLowerCase())) {
@@ -93,28 +80,23 @@ public class MinecraftEvents implements SimpleListener {
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
-            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
-                try {
-                    pm.sendMessage
-                            (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            });
+            try {
+                DiscordUtils.getUserChannel().sendMessage
+                        (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             return;
         }
         if (Util.isWhisperFrom(e.getMessageText().toLowerCase())) {
             DiscordUtils.sendDebug("is a whisper from msg.");
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
-            DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
-                try {
-                    pm.sendMessage
-                            (DiscordUtils.buildWhisperFromEmbed(who, msg)).queue();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            });
+            try {
+                DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildWhisperFromEmbed(who, msg)).queue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
@@ -122,11 +104,9 @@ public class MinecraftEvents implements SimpleListener {
     public void onHurt(PlayerDamagedEvent e) {
         DiscordUtils.sendDebug("player health updated.");
         if (isConnected() && !qskip.getReMinecraft().areChildrenConnected() && CONFIG.var_safeMode) {
-            DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
-                if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
-                if (e.getNewHealth() > 7f) return;
-                dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + Util.asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
-            });
+            if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
+            if (e.getNewHealth() > 7f) return;
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + Util.asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
         }
     }
 
