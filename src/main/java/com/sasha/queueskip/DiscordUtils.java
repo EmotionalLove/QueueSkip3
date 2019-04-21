@@ -4,9 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
 import java.io.BufferedReader;
@@ -19,11 +17,21 @@ public abstract class DiscordUtils {
     public static Message recievedMessage;
 
     public static User getManager() {
-        return Main.Jda.getUserById(Main.CONFIG.var_managerId);
+        return Main.discord.getUserById(Main.CONFIG.var_managerId);
     }
 
     public static User getAdministrator() {
-        return Main.Jda.getUserById(Main.CONFIG.var_adminId);
+        return Main.discord.getUserById(Main.CONFIG.var_adminId);
+    }
+
+    public static TextChannel getChannel() {
+        Guild guild = Main.discord.getGuildById(Main.CONFIG.var_serverId);
+        Category cat = guild.getCategoriesByName("queueskip", true).get(0);
+        if (cat == null) return null;
+        for (TextChannel textChannel : cat.getTextChannels()) {
+            if (textChannel.getTopic().equals("" + Main.CONFIG.var_localChannelId)) return textChannel;
+        }
+        return null;
     }
 
     public static MessageEmbed buildErrorEmbed(String message) {
