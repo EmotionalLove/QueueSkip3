@@ -38,38 +38,26 @@ public class Main extends RePlugin {
         uptime = System.currentTimeMillis();
         logger.log("RE:Minecraft implementing QueueSkip " + VERSION + "...");
         this.getReMinecraft().EVENT_BUS.registerListener(new MinecraftEvents(this));
-        if (CONFIG.var_discordToken.equalsIgnoreCase("[no default]")) {
-            logger.logError("Discord token isn't set!");
+        if (!Util.doStartupChecks(CONFIG)) {
+            logger.logError("Some parts of the configuration weren't filled out. Please revise it.");
             this.getReMinecraft().stop();
+            return;
         }
-        if (CONFIG.var_managerId.equalsIgnoreCase("[no default]")) {
-            logger.logError("Manager ID isn't set!");
-            this.getReMinecraft().stop();
-        }
-        if (discord == null) {
-            try {
-                discord = new JDABuilder(CONFIG.var_discordToken)
-                        .setEventManager(new AnnotatedEventManager())
-                        .addEventListener(new DiscordEvents())
-                        .buildBlocking();
-                if (CONFIG.var_newUser) {
-                    discord.getUserById(CONFIG.var_managerId).openPrivateChannel().queue(dm -> {
-                        dm.sendMessage(DiscordUtils.buildInfoEmbed(LANG_MANAGER.resolve("queueskip.welcome"),
-                                LANG_MANAGER.resolve("welcome.body"))).queue();
-                    }, fail -> {
-                        DiscordUtils.getAdministrator().openPrivateChannel().queue(a -> {
-                            a.sendMessage(DiscordUtils.buildErrorEmbed(DiscordUtils.getManager().getName() + "'s DM's can't be reached!")).submit();
-                        });
-                    });
-                    CONFIG.var_newUser = false;
-                }
-                ScheduledExecutorService sc = Executors.newScheduledThreadPool(2);
-            } catch (LoginException | InterruptedException ex) {
-                logger.logError("Couldn't log into Discord. Is the token invalid?");
-                ex.printStackTrace();
+        try {
+            discord = new JDABuilder(CONFIG.var_discordToken)
+                    .setEventManager(new AnnotatedEventManager())
+                    .addEventListener(new DiscordEvents())
+                    .buildBlocking();
+            if (CONFIG.var_newUser) {
+                DiscordUtils.generateUserChannel();
+                CONFIG.var_newUser = false;
             }
-
+            ScheduledExecutorService sc = Executors.newScheduledThreadPool(2);
+        } catch (LoginException | InterruptedException ex) {
+            logger.logError("Couldn't log into Discord. Is the token invalid?");
+            ex.printStackTrace();
         }
+
     }
 
     @Override
@@ -114,10 +102,6 @@ public class Main extends RePlugin {
         CONFIG = new QSkipConfig();
         this.getReMinecraft().configurations.add(CONFIG);
     }
-
-
-
-
 
 
 }

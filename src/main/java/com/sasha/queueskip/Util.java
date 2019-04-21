@@ -6,6 +6,22 @@ import static com.sasha.queueskip.Main.LANG_MANAGER;
 
 public class Util {
 
+    public static boolean doStartupChecks(QSkipConfig config) {
+        if (config.var_serverId.equalsIgnoreCase("[no default]")) {
+            return false;
+        }
+        if (config.var_adminId.equalsIgnoreCase("[no default]")) {
+            return false;
+        }
+        if (config.var_managerId.equalsIgnoreCase("[no default]")) {
+            return false;
+        }
+        if (config.var_discordToken.equalsIgnoreCase("[no default]")) {
+            return false;
+        }
+        return true;
+    }
+
     public static boolean isConnected() {
         return Main.CONFIG.var_queueSkipEnabled && Main.INSTANCE.getReMinecraft().minecraftClient.getSession().isConnected();
     }

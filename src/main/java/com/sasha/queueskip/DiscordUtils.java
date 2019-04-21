@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.core.EmbedBuilder;
+import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
 import java.awt.*;
@@ -24,14 +25,24 @@ public abstract class DiscordUtils {
         return Main.discord.getUserById(Main.CONFIG.var_adminId);
     }
 
-    public static TextChannel getChannel() {
+    public static TextChannel getUserChannel() {
         Guild guild = Main.discord.getGuildById(Main.CONFIG.var_serverId);
         Category cat = guild.getCategoriesByName("queueskip", true).get(0);
         if (cat == null) return null;
         for (TextChannel textChannel : cat.getTextChannels()) {
-            if (textChannel.getTopic().equals("" + Main.CONFIG.var_localChannelId)) return textChannel;
+            if (textChannel.getId().equals(Main.CONFIG.var_channelId)) return textChannel;
         }
         return null;
+    }
+
+    public static void generateUserChannel() {
+        Guild guild = Main.discord.getGuildById(Main.CONFIG.var_serverId);
+        Category cat = guild.getCategoriesByName("queueskip", true).get(0);
+        Member member = guild.getMemberById(Main.CONFIG.var_managerId);
+        if (cat == null) throw new IllegalStateException("QueueSkip category does not exist.");
+        cat.createTextChannel("control-panel").addPermissionOverride(member, Permission.MESSAGE_READ.getRawValue(), 0L).queue(channel -> {
+            Main.CONFIG.var_channelId = channel.getId();
+        });
     }
 
     public static MessageEmbed buildErrorEmbed(String message) {
@@ -83,7 +94,7 @@ public abstract class DiscordUtils {
         }
         JsonElement element = new JsonParser().parse(boi);
         JsonObject obj = element.getAsJsonObject();
-        String uuid =obj.get("id").getAsString();
+        String uuid = obj.get("id").getAsString();
         System.out.println(uuid);
         return uuid;
     }
