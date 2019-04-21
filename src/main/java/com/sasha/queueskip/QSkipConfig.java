@@ -13,9 +13,6 @@ public class QSkipConfig extends Configuration {
     @ConfigSetting public boolean var_newUser = true;
     @ConfigSetting public boolean var_debug = false;
     @ConfigSetting public boolean var_connectingAlert = true;
-    @ConfigSetting
-    public long var_subscription = -1L;
-
 
     QSkipConfig() {
         super("QueueSkip3");
