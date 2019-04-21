@@ -2,6 +2,7 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
+import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
@@ -11,7 +12,7 @@ import java.io.StringWriter;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @SimpleCommandInfo(description = "View the server tablist",
-syntax = {""})
+        syntax = {""})
 public class TabCommand extends SimpleCommand {
 
     public TabCommand() {
@@ -27,7 +28,7 @@ public class TabCommand extends SimpleCommand {
                 ).queue();
                 return;
             }
-            if (!Main.isConnected()) {
+            if (!Util.isConnected()) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(
                         DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. This is likely a bug. Try using the ;requeue command.")
                 ).queue();

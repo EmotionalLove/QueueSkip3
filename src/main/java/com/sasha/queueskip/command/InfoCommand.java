@@ -1,7 +1,7 @@
 package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
-import com.sasha.queueskip.Main;
+import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
@@ -20,7 +20,7 @@ public class InfoCommand extends SimpleCommand {
     @Override
     public void onCommand() {
         try {
-            if (!Main.isConnected()) {
+            if (!Util.isConnected()) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(
                         DiscordUtils.buildErrorEmbed("You cannot view your position because QueueSkip is disabled.")
                 ).queue();

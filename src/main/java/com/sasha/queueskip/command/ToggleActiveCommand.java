@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Enable or disable the queueskip service",
-syntax = {""})
+        syntax = {""})
 public class ToggleActiveCommand extends SimpleCommand {
 
     public ToggleActiveCommand() {
@@ -43,6 +43,7 @@ public class ToggleActiveCommand extends SimpleCommand {
 
     }
 }
+
 enum Action {
     DISABLING, ENABLING
 }

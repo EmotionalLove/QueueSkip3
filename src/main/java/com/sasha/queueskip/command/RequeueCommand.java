@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Relog into 2b2t",
-syntax = {""})
+        syntax = {""})
 public class RequeueCommand extends SimpleCommand {
     public RequeueCommand() {
         super("requeue");

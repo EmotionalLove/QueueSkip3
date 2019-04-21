@@ -30,15 +30,15 @@ public class Util {
         return msg.toLowerCase().startsWith("exception connecting:");
     }
 
-    public boolean isWhisperTo(String s) {
+    public static boolean isWhisperTo(String s) {
         return s.matches("to .*: .*$");
     }
 
-    public boolean isWhisperFrom(String s) {
+    public static boolean isWhisperFrom(String s) {
         return s.matches("^.* whispers: .*$");
     }
 
-    public float asHearts(float health) {
+    public static float asHearts(float health) {
         return health / (float) 2;
     }
 

@@ -11,7 +11,8 @@ public class AboutCommand extends SimpleCommand {
         super("queueskip");
     }
 
-    @Override public void onCommand() {
+    @Override
+    public void onCommand() {
         Main.INSTANCE.getReMinecraft().sendToChildren(new ServerChatPacket(Message.fromString("\2476QueueSkip " + Main.VERSION)));
     }
 }

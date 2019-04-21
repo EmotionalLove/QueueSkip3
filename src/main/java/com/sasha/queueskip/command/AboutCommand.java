@@ -10,14 +10,15 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "View information about the instance of queueskip",
-syntax = {""})
+        syntax = {""})
 public class AboutCommand extends SimpleCommand {
 
     public AboutCommand() {
         super("about");
     }
 
-    @Override public void onCommand() {
+    @Override
+    public void onCommand() {
         try {
             DiscordUtils.recievedMessage.getChannel().sendMessage("```\n" +
                     "QueueSkip " + Main.VERSION + " with RE:Minecraft " + ReMinecraft.VERSION + "\n\n" +

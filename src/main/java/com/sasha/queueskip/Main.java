@@ -14,8 +14,6 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class Main extends RePlugin {
 
@@ -52,7 +50,6 @@ public class Main extends RePlugin {
                 DiscordUtils.generateUserChannel();
                 CONFIG.var_newUser = false;
             }
-            ScheduledExecutorService sc = Executors.newScheduledThreadPool(2);
         } catch (LoginException | InterruptedException ex) {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();

@@ -6,13 +6,15 @@ import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
+import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.event.*;
 
 import java.io.IOException;
 
 import static com.sasha.queueskip.Main.CONFIG;
-import static com.sasha.queueskip.Main.isConnected;
+import static com.sasha.queueskip.Util.is2b2tDead;
+import static com.sasha.queueskip.Util.isConnected;
 
 public class MinecraftEvents implements SimpleListener {
 
@@ -71,7 +73,7 @@ public class MinecraftEvents implements SimpleListener {
     // to Color: hi there
     @SimpleEventHandler
     public void onChat(ChatReceivedEvent e) {
-        if (Main.is2b2tDead(e.getMessageText())) {
+        if (is2b2tDead(e.getMessageText())) {
             DiscordUtils.getManager().openPrivateChannel().queue(pm -> {
                 pm.sendMessage(DiscordUtils.buildErrorEmbed(e.getMessageText() + "\n\nDue to the above exception, QueueSkip3 is automatically requeuing")).queue(x -> {
                     Main.INSTANCE.getReMinecraft().reLaunch();
@@ -86,7 +88,7 @@ public class MinecraftEvents implements SimpleListener {
             });
             return;
         }
-        if (qskip.isWhisperTo(e.getMessageText().toLowerCase())) {
+        if (Util.isWhisperTo(e.getMessageText().toLowerCase())) {
             DiscordUtils.sendDebug("is a whisper to msg.");
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
@@ -101,7 +103,7 @@ public class MinecraftEvents implements SimpleListener {
             });
             return;
         }
-        if (qskip.isWhisperFrom(e.getMessageText().toLowerCase())) {
+        if (Util.isWhisperFrom(e.getMessageText().toLowerCase())) {
             DiscordUtils.sendDebug("is a whisper from msg.");
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
@@ -123,7 +125,7 @@ public class MinecraftEvents implements SimpleListener {
             DiscordUtils.getManager().openPrivateChannel().queue(dm -> {
                 if (e.getOldHealth() - e.getNewHealth() < 0.1f) return;
                 if (e.getNewHealth() > 7f) return;
-                dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + qskip.asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
+                dm.sendMessage(DiscordUtils.buildInfoEmbed("Disconnected", "You were damaged " + Util.asHearts(e.getOldHealth() - e.getNewHealth()) + " hearts. You were requeued because Safe mode is on.")).queue(ee -> ReMinecraft.INSTANCE.reLaunch());
             });
         }
     }
