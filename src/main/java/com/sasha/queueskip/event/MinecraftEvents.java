@@ -75,7 +75,7 @@ public class MinecraftEvents implements SimpleListener {
             DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildInfoEmbed("Connecting to 2b2t", "Your account has completed the queuing process")).queue();
             return;
         }
-        if (Util.isWhisperTo(e.getMessageText().toLowerCase())) {
+        if (!qskip.getReMinecraft().areChildrenConnected() && Util.isWhisperTo(e.getMessageText().toLowerCase())) {
             DiscordUtils.sendDebug("is a whisper to msg.");
             String[] begin = e.getMessageText().substring(0, e.getMessageText().indexOf(":")).split(" ");
             String who = begin[1].replace(":", "");
@@ -88,7 +88,7 @@ public class MinecraftEvents implements SimpleListener {
             }
             return;
         }
-        if (Util.isWhisperFrom(e.getMessageText().toLowerCase())) {
+        if (!qskip.getReMinecraft().areChildrenConnected() && Util.isWhisperFrom(e.getMessageText().toLowerCase())) {
             DiscordUtils.sendDebug("is a whisper from msg.");
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
