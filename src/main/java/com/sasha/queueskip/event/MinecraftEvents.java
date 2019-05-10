@@ -1,6 +1,7 @@
 package com.sasha.queueskip.event;
 
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
@@ -92,6 +93,7 @@ public class MinecraftEvents implements SimpleListener {
             DiscordUtils.sendDebug("is a whisper from msg.");
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
+            qskip.getReMinecraft().minecraftClient.getSession().send(new ClientChatPacket("/w " + who + " [QueueSkip] This player is currently AFK!"));
             try {
                 DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildWhisperFromEmbed(who, msg)).queue();
             } catch (IOException ex) {
