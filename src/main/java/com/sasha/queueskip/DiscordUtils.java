@@ -53,6 +53,14 @@ public abstract class DiscordUtils {
         return builder.build();
     }
 
+    public static MessageEmbed buildServerAnnouncementEmbed(String message) {
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Color.YELLOW);
+        builder.setTitle("Server Announcement");
+        builder.setDescription(message);
+        return builder.build();
+    }
+
     public static MessageEmbed buildInfoEmbed(String title, String message) {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.CYAN);

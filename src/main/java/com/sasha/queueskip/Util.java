@@ -38,6 +38,10 @@ public class Util {
         return s.matches("^.* whispers: .*$");
     }
 
+    public static boolean isServer(String s) {
+        return s.startsWith("[SERVER]");
+    }
+
     public static float asHearts(float health) {
         return health / (float) 2;
     }
