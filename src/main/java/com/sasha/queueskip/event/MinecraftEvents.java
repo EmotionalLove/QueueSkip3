@@ -3,6 +3,7 @@ package com.sasha.queueskip.event;
 import com.github.steveice10.mc.protocol.data.message.Message;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.DiscordUtils;
@@ -10,6 +11,7 @@ import com.sasha.queueskip.Main;
 import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.event.*;
+import net.dv8tion.jda.core.entities.MessageEmbed;
 
 import java.io.IOException;
 
@@ -30,7 +32,11 @@ public class MinecraftEvents implements SimpleListener {
         DiscordUtils.sendDebug("authentication with mojang completed.");
         if (!e.isSuccessful() && e.getMethod() == MojangAuthenticateEvent.Method.EMAILPASS) {
             e.setCancelled(true);
-            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!")).queue();
+            if (CONFIG.var_newUser) {
+                DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!")).queue();
+            } else {
+                DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildErrorEmbed("Your Mojang account credentials are invalid!")).queue();
+            }
         }
     }
 
@@ -101,6 +107,14 @@ public class MinecraftEvents implements SimpleListener {
             DiscordUtils.sendDebug("is a server announcement.");
             String message = e.getMessageText().replace("[SERVER] ", "");
 
+        }
+    }
+
+    @SimpleEventHandler
+    public void onKick(RemoteServerPacketRecieveEvent e) {
+        if (e.getRecievedPacket() instanceof ServerDisconnectPacket) {
+            MessageEmbed embed = DiscordUtils.buildErrorEmbed("[Disconnected] " + ((ServerDisconnectPacket) e.getRecievedPacket()).getReason().getText().replaceAll("§.", ""));
+            DiscordUtils.getUserChannel().sendMessage(embed);
         }
     }
 

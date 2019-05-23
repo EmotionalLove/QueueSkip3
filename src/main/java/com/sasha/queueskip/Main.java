@@ -11,6 +11,7 @@ import com.sasha.reminecraft.logging.LoggerBuilder;
 import com.sasha.simplecmdsys.SimpleCommandProcessor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
@@ -48,6 +49,13 @@ public class Main extends RePlugin {
                     .buildBlocking();
             if (CONFIG.var_newUser) {
                 DiscordUtils.generateUserChannel();
+                DiscordUtils.getUserChannel()
+                        .sendMessage(new MessageBuilder()
+                                .setEmbed(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip!", "Please read the #guide channel to learn how to set up QueueSkip."))
+                                .setContent(DiscordUtils.getManager().getAsMention()).build()).queue();
+                CONFIG.var_sessionId = "newuser";
+                CONFIG.var_mojangEmail = "newuser";
+                CONFIG.var_mojangEmail = "newuser";
                 CONFIG.var_newUser = false;
             }
         } catch (LoginException | InterruptedException ex) {
