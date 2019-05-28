@@ -100,13 +100,17 @@ public class MinecraftEvents implements SimpleListener {
             String who = e.getMessageText().substring(0, e.getMessageText().indexOf(" "));
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
             qskip.getReMinecraft().minecraftClient.getSession().send(new ClientChatPacket("/w " + who + " [QueueSkip] This player is currently AFK!"));
-            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildServerAnnouncementEmbed(msg)).queue();
+            try {
+                DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildWhisperFromEmbed(who, msg)).queue();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
             return;
         }
-        if (!qskip.getReMinecraft().areChildrenConnected() && Util.isServer(e.getMessageText().toLowerCase())) {
+        if (!qskip.getReMinecraft().areChildrenConnected() && Util.isServer(e.getMessageText())) {
             DiscordUtils.sendDebug("is a server announcement.");
             String message = e.getMessageText().replace("[SERVER] ", "");
-
+            DiscordUtils.getUserChannel().sendMessage(DiscordUtils.buildServerAnnouncementEmbed(message)).queue();
         }
     }
 
