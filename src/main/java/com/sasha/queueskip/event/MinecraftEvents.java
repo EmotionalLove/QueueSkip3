@@ -118,7 +118,7 @@ public class MinecraftEvents implements SimpleListener {
     public void onKick(RemoteServerPacketRecieveEvent e) {
         if (e.getRecievedPacket() instanceof ServerDisconnectPacket) {
             MessageEmbed embed = DiscordUtils.buildErrorEmbed("[Disconnected] " + ((ServerDisconnectPacket) e.getRecievedPacket()).getReason().getText().replaceAll("§.", ""));
-            DiscordUtils.getUserChannel().sendMessage(embed);
+            DiscordUtils.getUserChannel().sendMessage(embed).queue();
         }
     }
 
