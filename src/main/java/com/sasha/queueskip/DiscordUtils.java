@@ -42,7 +42,7 @@ public abstract class DiscordUtils {
         Category cat = guild.getCategoriesByName("queueskip", true).get(0);
         Member member = guild.getMemberById(Main.CONFIG.var_managerId);
         if (cat == null) throw new IllegalStateException("QueueSkip category does not exist.");
-        cat.createTextChannel("control-panel").addPermissionOverride(member, Permission.MESSAGE_READ.getRawValue(), 0L).queue(channel -> {
+        cat.createTextChannel("control-panel").addPermissionOverride(member, Permission.MESSAGE_READ.getRawValue(), 0L).setSlowmode(7).queue(channel -> {
             Main.CONFIG.var_channelId = channel.getId();
             if (consumer != null) consumer.accept((TextChannel) channel);
         });
