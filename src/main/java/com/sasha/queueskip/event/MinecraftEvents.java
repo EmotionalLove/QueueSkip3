@@ -127,6 +127,7 @@ public class MinecraftEvents implements SimpleListener {
             ServerPlayerListDataPacket pck = (ServerPlayerListDataPacket) e.getRecievedPacket();
             ReClient.ReClientCache.INSTANCE.tabFooter = new TextMessage(pck.getFooter().toString() + "\n\n\2476Powered by QueueSkip " + Main.VERSION + " by Sasha");
             ReClient.ReClientCache.INSTANCE.tabHeader = pck.getHeader();
+            e.setCancelled(true);
         }
     }
 
