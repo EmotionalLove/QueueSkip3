@@ -1,9 +1,11 @@
 package com.sasha.queueskip.event;
 
 import com.github.steveice10.mc.protocol.data.message.Message;
+import com.github.steveice10.mc.protocol.data.message.TextMessage;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.ServerDisconnectPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.ServerPlayerListDataPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.DiscordUtils;
@@ -11,6 +13,7 @@ import com.sasha.queueskip.Main;
 import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.event.*;
+import com.sasha.reminecraft.client.ReClient;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
 import java.io.IOException;
@@ -119,6 +122,11 @@ public class MinecraftEvents implements SimpleListener {
         if (e.getRecievedPacket() instanceof ServerDisconnectPacket) {
             MessageEmbed embed = DiscordUtils.buildErrorEmbed("[Disconnected] " + ((ServerDisconnectPacket) e.getRecievedPacket()).getReason().getText().replaceAll("§.", ""));
             DiscordUtils.getUserChannel().sendMessage(embed).queue();
+        }
+        if (e.getRecievedPacket() instanceof ServerPlayerListDataPacket) {
+            ServerPlayerListDataPacket pck = (ServerPlayerListDataPacket) e.getRecievedPacket();
+            ReClient.ReClientCache.INSTANCE.tabFooter = new TextMessage(pck.getFooter().toString() + "\n\n\2476Powered by QueueSkip " + Main.VERSION + " by Sasha");
+            ReClient.ReClientCache.INSTANCE.tabHeader = pck.getHeader();
         }
     }
 
