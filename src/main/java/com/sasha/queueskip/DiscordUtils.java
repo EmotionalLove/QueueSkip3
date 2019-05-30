@@ -7,11 +7,13 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 
+import javax.annotation.Nullable;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.function.Consumer;
 
 public abstract class DiscordUtils {
 
@@ -35,14 +37,19 @@ public abstract class DiscordUtils {
         return null;
     }
 
-    public static void generateUserChannel() {
+    public static void generateUserChannel(@Nullable Consumer<TextChannel> consumer) {
         Guild guild = Main.discord.getGuildById(Main.CONFIG.var_serverId);
         Category cat = guild.getCategoriesByName("queueskip", true).get(0);
         Member member = guild.getMemberById(Main.CONFIG.var_managerId);
         if (cat == null) throw new IllegalStateException("QueueSkip category does not exist.");
         cat.createTextChannel("control-panel").addPermissionOverride(member, Permission.MESSAGE_READ.getRawValue(), 0L).queue(channel -> {
             Main.CONFIG.var_channelId = channel.getId();
+            if (consumer != null) consumer.accept((TextChannel) channel);
         });
+    }
+
+    public static void generateUserChannel() {
+        generateUserChannel(null);
     }
 
     public static MessageEmbed buildErrorEmbed(String message) {

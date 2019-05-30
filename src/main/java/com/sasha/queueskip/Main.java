@@ -19,7 +19,7 @@ import javax.security.auth.login.LoginException;
 public class Main extends RePlugin {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.2.2";
+    public static final String VERSION = "3.2.3";
 
     public static JDA discord;
 
@@ -48,15 +48,15 @@ public class Main extends RePlugin {
                     .addEventListener(new DiscordEvents())
                     .buildBlocking();
             if (CONFIG.var_newUser) {
-                DiscordUtils.generateUserChannel();
-                DiscordUtils.getUserChannel()
-                        .sendMessage(new MessageBuilder()
-                                .setEmbed(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip!", "Please read the #guide channel to learn how to set up QueueSkip."))
-                                .setContent(DiscordUtils.getManager().getAsMention()).build()).queue();
-                CONFIG.var_sessionId = "newuser";
-                CONFIG.var_mojangEmail = "newuser";
-                CONFIG.var_mojangEmail = "newuser";
-                CONFIG.var_newUser = false;
+                DiscordUtils.generateUserChannel(channel -> {
+                    channel.sendMessage(new MessageBuilder()
+                            .setEmbed(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip!", "Please read the #guide channel to learn how to set up QueueSkip."))
+                            .setContent(DiscordUtils.getManager().getAsMention()).build()).queue();
+                    CONFIG.var_sessionId = "newuser";
+                    CONFIG.var_mojangEmail = "newuser";
+                    CONFIG.var_mojangEmail = "newuser";
+                    CONFIG.var_newUser = false;
+                });
             }
         } catch (LoginException | InterruptedException ex) {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
