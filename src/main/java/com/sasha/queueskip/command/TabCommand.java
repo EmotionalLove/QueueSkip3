@@ -30,7 +30,7 @@ public class TabCommand extends SimpleCommand {
             }
             if (!Util.isConnected()) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(
-                        DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. This is likely a bug. Try using the ;requeue command.")
+                        DiscordUtils.buildErrorEmbed("Your account isn't connected to 2b2t. 2b2t might be down, or QueueSkip might not be able to connect to 2b2t.")
                 ).queue();
                 return;
             }
