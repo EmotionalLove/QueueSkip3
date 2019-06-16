@@ -38,6 +38,7 @@ public class QSkipConfig extends Configuration {
         var_spamMessages.add("> Don't pay $20 for the priority, pay $5 for the skip - https://discord.gg/YKRY6P3 <");
         var_spamMessages.add("> No queue, fresh world, elytra enabled - nemuii.org <");
         var_spamMessages.add("> Meet a rare female 2b2t player - https://discord.gg/YKRY6P3 <");
+        var_spamMessages.add("/w RusherB0T owo 2b2t");
     }
 
     QSkipConfig() {

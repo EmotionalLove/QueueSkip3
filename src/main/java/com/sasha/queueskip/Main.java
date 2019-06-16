@@ -15,6 +15,9 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main extends RePlugin {
 
@@ -28,6 +31,7 @@ public class Main extends RePlugin {
 
     public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
     public static final LocalisedResponseManager LANG_MANAGER = new LocalisedResponseManager();
+    public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
 
     public static long uptime;
 
@@ -58,6 +62,9 @@ public class Main extends RePlugin {
                     CONFIG.var_newUser = false;
                 });
             }
+            executorService.scheduleAtFixedRate(() -> {
+
+            }, 60L, 60L, TimeUnit.SECONDS);
         } catch (LoginException | InterruptedException ex) {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();
