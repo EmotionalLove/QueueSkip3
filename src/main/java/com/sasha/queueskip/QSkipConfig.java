@@ -29,6 +29,8 @@ public class QSkipConfig extends Configuration {
     @ConfigSetting
     public boolean var_connectingAlert = true;
     @ConfigSetting
+    public boolean var_spamChat = true;
+    @ConfigSetting
     public ArrayList<String> var_spamMessages = new ArrayList<>();
 
     {

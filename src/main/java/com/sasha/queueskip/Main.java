@@ -1,5 +1,8 @@
 package com.sasha.queueskip;
 
+import com.github.steveice10.mc.protocol.MinecraftProtocol;
+import com.github.steveice10.mc.protocol.data.SubProtocol;
+import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.sasha.queueskip.command.*;
 import com.sasha.queueskip.event.DiscordEvents;
 import com.sasha.queueskip.event.MinecraftEvents;
@@ -15,9 +18,12 @@ import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.hooks.AnnotatedEventManager;
 
 import javax.security.auth.login.LoginException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+
+import static com.sasha.queueskip.Util.isConnected;
 
 public class Main extends RePlugin {
 
@@ -56,14 +62,17 @@ public class Main extends RePlugin {
                     channel.sendMessage(new MessageBuilder()
                             .setEmbed(DiscordUtils.buildInfoEmbed("Welcome to QueueSkip!", "Please read the #guide channel to learn how to set up QueueSkip."))
                             .setContent(DiscordUtils.getManager().getAsMention()).build()).queue();
-                    CONFIG.var_sessionId = "newuser";
-                    CONFIG.var_mojangEmail = "newuser";
-                    CONFIG.var_mojangEmail = "newuser";
+                    getReMinecraft().MAIN_CONFIG.var_sessionId = "newuser";
+                    getReMinecraft().MAIN_CONFIG.var_mojangEmail = "newuser";
+                    getReMinecraft().MAIN_CONFIG.var_mojangEmail = "newuser";
                     CONFIG.var_newUser = false;
                 });
             }
             executorService.scheduleAtFixedRate(() -> {
-
+                if (CONFIG.var_spamChat && isConnected() && !getReMinecraft().areChildrenConnected() && ((MinecraftProtocol) getReMinecraft().minecraftClient.getSession().getPacketProtocol()).getSubProtocol() == SubProtocol.GAME) {
+                    Random random = new Random();
+                    getReMinecraft().minecraftClient.getSession().send(new ClientChatPacket(CONFIG.var_spamMessages.get(random.nextInt(CONFIG.var_spamMessages.size()))));
+                }
             }, 60L, 60L, TimeUnit.SECONDS);
         } catch (LoginException | InterruptedException ex) {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
