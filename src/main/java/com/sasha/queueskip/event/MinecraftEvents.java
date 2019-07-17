@@ -91,6 +91,7 @@ public class MinecraftEvents implements SimpleListener {
             String who = begin[1].replace(":", "");
             String msg = e.getMessageText().substring(e.getMessageText().indexOf(":") + 2);
             try {
+                if (msg.equalsIgnoreCase("owo 2b2t")) return; // xd this is for the queueskip spammer.
                 DiscordUtils.getUserChannel().sendMessage
                         (DiscordUtils.buildWhisperToEmbed(who, msg)).queue();
             } catch (IOException ex) {
