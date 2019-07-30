@@ -3,22 +3,22 @@ package com.sasha.queueskip.command;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.client.ReClient;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "View your position in the world, and other player stats.",
         syntax = {""})
-public class InfoCommand extends SimpleCommand {
+public class InfoCommand extends Command {
 
     public InfoCommand() {
         super("info");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             if (!Util.isConnected()) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(

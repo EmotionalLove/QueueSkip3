@@ -2,18 +2,18 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
-import com.sasha.simplecmdsys.SimpleCommand;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.util.concurrent.TimeUnit;
 
-public class UptimeCommand extends SimpleCommand {
+public class UptimeCommand extends Command {
 
     public UptimeCommand() {
         super("uptime");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         DiscordUtils.recievedMessage.getChannel()
                 .sendMessage("```\nThe software has been running for " + formatUptime(System.currentTimeMillis(), Main.uptime) + " without a reboot.\n```").submit();
     }

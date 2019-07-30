@@ -11,7 +11,7 @@ import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.logging.ILogger;
 import com.sasha.reminecraft.logging.LoggerBuilder;
-import com.sasha.simplecmdsys.SimpleCommandProcessor;
+import me.someonelove.bettercommandsystem.CommandProcessor;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.MessageBuilder;
@@ -28,14 +28,14 @@ import static com.sasha.queueskip.Util.isConnected;
 public class Main extends RePlugin {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.2.4";
+    public static final String VERSION = "3.2.5";
 
     public static JDA discord;
 
     public static ILogger logger = LoggerBuilder.buildProperLogger("QueueSkip3");
     public static QSkipConfig CONFIG;
 
-    public static SimpleCommandProcessor COMMAND_PROCESSOR = new SimpleCommandProcessor(";");
+    public static CommandProcessor COMMAND_PROCESSOR = new CommandProcessor(";");
     public static final LocalisedResponseManager LANG_MANAGER = new LocalisedResponseManager();
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
 
@@ -99,19 +99,19 @@ public class Main extends RePlugin {
     @Override
     public void registerCommands() {
         try {
-            COMMAND_PROCESSOR.register(LoginCommand.class);
-            COMMAND_PROCESSOR.register(ToggleActiveCommand.class);
-            COMMAND_PROCESSOR.register(RequeueCommand.class);
-            COMMAND_PROCESSOR.register(WhisperCommand.class);
-            COMMAND_PROCESSOR.register(TabCommand.class);
-            COMMAND_PROCESSOR.register(InfoCommand.class);
-            COMMAND_PROCESSOR.register(HelpCommand.class);
-            COMMAND_PROCESSOR.register(ToggleSafeModeCommand.class);
-            COMMAND_PROCESSOR.register(AboutCommand.class);
-            COMMAND_PROCESSOR.register(ToggleInRangeNotificationsCommand.class);
-            COMMAND_PROCESSOR.register(ToggleDebugCommand.class);
-            COMMAND_PROCESSOR.register(UptimeCommand.class);
-            COMMAND_PROCESSOR.register(ToggleConnectingAlertCommand.class);
+            COMMAND_PROCESSOR.registerCommand(new LoginCommand());
+            COMMAND_PROCESSOR.registerCommand(new ToggleActiveCommand());
+            COMMAND_PROCESSOR.registerCommand(new RequeueCommand());
+            COMMAND_PROCESSOR.registerCommand(new WhisperCommand());
+            COMMAND_PROCESSOR.registerCommand(new TabCommand());
+            COMMAND_PROCESSOR.registerCommand(new InfoCommand());
+            COMMAND_PROCESSOR.registerCommand(new HelpCommand());
+            COMMAND_PROCESSOR.registerCommand(new ToggleSafeModeCommand());
+            COMMAND_PROCESSOR.registerCommand(new AboutCommand());
+            COMMAND_PROCESSOR.registerCommand(new ToggleInRangeNotificationsCommand());
+            COMMAND_PROCESSOR.registerCommand(new ToggleDebugCommand());
+            COMMAND_PROCESSOR.registerCommand(new UptimeCommand());
+            COMMAND_PROCESSOR.registerCommand(new ToggleConnectingAlertCommand());
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();

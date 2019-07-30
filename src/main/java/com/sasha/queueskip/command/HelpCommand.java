@@ -1,25 +1,20 @@
 package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
-import net.dv8tion.jda.core.EmbedBuilder;
-
-import java.awt.*;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import static com.sasha.queueskip.Main.COMMAND_PROCESSOR;
+import me.someonelove.bettercommandsystem.Command;
 
 @SimpleCommandInfo(description = "Show this message", syntax = {""})
-public class HelpCommand extends SimpleCommand {
+public class HelpCommand extends Command {
 
     public HelpCommand() {
         super("help");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
+        DiscordUtils.recievedMessage.getChannel().sendMessage("https://i.imgur.com/GHSULpe.png").submit();
+        /* todo redo
         try {
             EmbedBuilder b = new EmbedBuilder();
             b.setColor(Color.LIGHT_GRAY);
@@ -42,7 +37,7 @@ public class HelpCommand extends SimpleCommand {
             DiscordUtils.getAdministrator().openPrivateChannel().queue(dm -> {
                 dm.sendMessage(DiscordUtils.buildErrorEmbed(writer.toString())).submit();
             });
-        }
+        }*/
 
     }
 }

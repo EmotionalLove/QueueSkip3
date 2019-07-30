@@ -2,21 +2,21 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Toggle safe mode on and off", syntax = {""})
-public class ToggleSafeModeCommand extends SimpleCommand {
+public class ToggleSafeModeCommand extends Command {
 
     public ToggleSafeModeCommand() {
         super("safe");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             Action action = Main.CONFIG.var_safeMode ? Action.DISABLING : Action.ENABLING;
             switch (action) {

@@ -2,21 +2,21 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Toggle \"player in range\" notifications", syntax = {""})
-public class ToggleInRangeNotificationsCommand extends SimpleCommand {
+public class ToggleInRangeNotificationsCommand extends Command {
 
     public ToggleInRangeNotificationsCommand() {
         super("inrange");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             Action action = Main.CONFIG.var_inRange ? Action.DISABLING : Action.ENABLING;
             switch (action) {

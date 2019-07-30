@@ -4,8 +4,8 @@ import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.queueskip.Util;
 import com.sasha.reminecraft.client.ReClient;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -13,14 +13,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @SimpleCommandInfo(description = "View the server tablist",
         syntax = {""})
-public class TabCommand extends SimpleCommand {
+public class TabCommand extends Command {
 
     public TabCommand() {
         super("tab");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             if (!Main.CONFIG.var_queueSkipEnabled) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(

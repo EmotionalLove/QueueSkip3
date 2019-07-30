@@ -2,8 +2,8 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.reminecraft.ReMinecraft;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -11,21 +11,21 @@ import java.io.StringWriter;
 import static com.sasha.queueskip.Main.LANG_MANAGER;
 
 @SimpleCommandInfo(description = "Log into a Mojang account", syntax = {"<email> <password>"})
-public class LoginCommand extends SimpleCommand {
+public class LoginCommand extends Command {
 
     public LoginCommand() {
         super("login");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
-            if (this.getArguments() == null || this.getArguments().length != 2) {
+            if (args == null || args.length != 2) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed(LANG_MANAGER.resolve("args.err"))).queue();
                 return;
             }
-            String email = this.getArguments()[0];
-            String password = this.getArguments()[1];
+            String email = args[0];
+            String password = args[1];
             ReMinecraft.INSTANCE.MAIN_CONFIG.var_mojangEmail = email;
             ReMinecraft.INSTANCE.MAIN_CONFIG.var_mojangPassword = password;
             ReMinecraft.INSTANCE.MAIN_CONFIG.var_sessionId = "dsljf";

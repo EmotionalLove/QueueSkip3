@@ -2,22 +2,22 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Enable or disable the queueskip service",
         syntax = {""})
-public class ToggleActiveCommand extends SimpleCommand {
+public class ToggleActiveCommand extends Command {
 
     public ToggleActiveCommand() {
         super("active");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             Action action = Main.CONFIG.var_queueSkipEnabled ? Action.DISABLING : Action.ENABLING;
             switch (action) {

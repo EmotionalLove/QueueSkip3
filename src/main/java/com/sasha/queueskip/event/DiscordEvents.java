@@ -16,7 +16,14 @@ public class DiscordEvents extends ListenerAdapter {
             DiscordUtils.recievedMessage = e.getMessage();
             e.getMessage().getChannel().sendTyping().queue(type -> {
                 if (e.getMessage().getContentDisplay().startsWith(";")) {
-                    Main.COMMAND_PROCESSOR.processCommand(e.getMessage().getContentDisplay());
+                    try {
+                        if (!Main.COMMAND_PROCESSOR.processCommand(e.getMessage().getContentDisplay())) {
+                            e.getMessage().getChannel().sendMessage(DiscordUtils.buildErrorEmbed("The specified command couldn't be found.")).submit();
+                        }
+                    } catch (Exception ex) {
+                        e.getMessage().getChannel().sendMessage(DiscordUtils.buildErrorEmbed("An exception occurred whilst processing the requested command.")).submit();
+                        ex.printStackTrace();
+                    }
                 }
             });
 

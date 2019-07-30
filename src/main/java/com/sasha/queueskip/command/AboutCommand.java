@@ -3,22 +3,22 @@ package com.sasha.queueskip.command;
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
 import com.sasha.reminecraft.ReMinecraft;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "View information about the instance of queueskip",
         syntax = {""})
-public class AboutCommand extends SimpleCommand {
+public class AboutCommand extends Command {
 
     public AboutCommand() {
         super("about");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             DiscordUtils.recievedMessage.getChannel().sendMessage("```\n" +
                     "QueueSkip " + Main.VERSION + " with RE:Minecraft " + ReMinecraft.VERSION + "\n\n" +

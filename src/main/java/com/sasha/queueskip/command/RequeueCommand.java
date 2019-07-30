@@ -2,21 +2,21 @@ package com.sasha.queueskip.command;
 
 import com.sasha.queueskip.DiscordUtils;
 import com.sasha.queueskip.Main;
-import com.sasha.simplecmdsys.SimpleCommand;
 import com.sasha.simplecmdsys.SimpleCommandInfo;
+import me.someonelove.bettercommandsystem.Command;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 @SimpleCommandInfo(description = "Relog into 2b2t",
         syntax = {""})
-public class RequeueCommand extends SimpleCommand {
+public class RequeueCommand extends Command {
     public RequeueCommand() {
         super("requeue");
     }
 
     @Override
-    public void onCommand() {
+    public void onCommand(boolean hasArgs, String[] args) {
         try {
             if (!Main.CONFIG.var_queueSkipEnabled) {
                 DiscordUtils.recievedMessage.getChannel().sendMessage(DiscordUtils.buildErrorEmbed("You can't requeue your account because you have QueueSkip disabled.")).queue();
