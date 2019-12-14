@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.dv8tion:JDA:3.8.1_439'
+    implementation 'net.dv8tion:JDA:3.8.3_463'
     implementation 'com.github.EmotionalLove:BetterCommandSystem:1a91a4621e'
     //implementation 'com.github.EmotionalLove:ReMinecraft:1.0.3'
     implementation files(urlFile("https://github.com/EmotionalLove/ReMinecraft/releases/download/2.0.5/RE_Minecraft.jar", "ReMinecraft"))
