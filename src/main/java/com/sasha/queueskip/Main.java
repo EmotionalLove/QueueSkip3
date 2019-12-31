@@ -4,9 +4,11 @@ import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.sasha.queueskip.command.*;
+import com.sasha.queueskip.command.ingame.PartyChatCommand;
 import com.sasha.queueskip.event.DiscordEvents;
 import com.sasha.queueskip.event.MinecraftEvents;
 import com.sasha.queueskip.localisation.LocalisedResponseManager;
+import com.sasha.queueskip.partychat.PartyChatManager;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.logging.ILogger;
@@ -39,6 +41,8 @@ public class Main extends RePlugin {
     public static final LocalisedResponseManager LANG_MANAGER = new LocalisedResponseManager();
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
 
+    public static PartyChatManager partyChatManager;
+
     public static long uptime;
 
     @Override
@@ -56,7 +60,11 @@ public class Main extends RePlugin {
             discord = new JDABuilder(CONFIG.var_discordToken)
                     .setEventManager(new AnnotatedEventManager())
                     .addEventListener(new DiscordEvents())
-                    .buildBlocking();
+                    .build().awaitReady();
+            if (discord.getGuildById(CONFIG.var_serverId).getTextChannelsByName("party-chat", false).size() == 1) {
+                partyChatManager = new PartyChatManager(discord);
+                this.getReMinecraft().EVENT_BUS.registerListener(partyChatManager);
+            }
             if (CONFIG.var_newUser) {
                 DiscordUtils.generateUserChannel(channel -> {
                     channel.sendMessage(new MessageBuilder()
@@ -78,7 +86,6 @@ public class Main extends RePlugin {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();
         }
-
     }
 
     @Override
@@ -113,6 +120,7 @@ public class Main extends RePlugin {
             COMMAND_PROCESSOR.registerCommand(new UptimeCommand());
             COMMAND_PROCESSOR.registerCommand(new ToggleConnectingAlertCommand());
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
+            ReMinecraft.INGAME_CMD_PROCESSOR.register(PartyChatCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
