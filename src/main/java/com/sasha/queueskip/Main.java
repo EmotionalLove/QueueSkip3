@@ -4,6 +4,7 @@ import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.sasha.queueskip.command.*;
+import com.sasha.queueskip.command.ingame.PartyChatCommand;
 import com.sasha.queueskip.event.DiscordEvents;
 import com.sasha.queueskip.event.MinecraftEvents;
 import com.sasha.queueskip.localisation.LocalisedResponseManager;
@@ -119,6 +120,7 @@ public class Main extends RePlugin {
             COMMAND_PROCESSOR.registerCommand(new UptimeCommand());
             COMMAND_PROCESSOR.registerCommand(new ToggleConnectingAlertCommand());
             ReMinecraft.INGAME_CMD_PROCESSOR.register(com.sasha.queueskip.command.ingame.AboutCommand.class);
+            ReMinecraft.INGAME_CMD_PROCESSOR.register(PartyChatCommand.class);
         } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
         }
