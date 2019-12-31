@@ -30,7 +30,7 @@ import static com.sasha.queueskip.Util.isConnected;
 public class Main extends RePlugin {
 
     public static Main INSTANCE;
-    public static final String VERSION = "3.2.5";
+    public static final String VERSION = "3.3";
 
     public static JDA discord;
 
