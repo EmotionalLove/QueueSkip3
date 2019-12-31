@@ -7,6 +7,7 @@ import com.sasha.queueskip.command.*;
 import com.sasha.queueskip.event.DiscordEvents;
 import com.sasha.queueskip.event.MinecraftEvents;
 import com.sasha.queueskip.localisation.LocalisedResponseManager;
+import com.sasha.queueskip.partychat.PartyChatManager;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.logging.ILogger;
@@ -39,6 +40,8 @@ public class Main extends RePlugin {
     public static final LocalisedResponseManager LANG_MANAGER = new LocalisedResponseManager();
     public static ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
 
+    public static PartyChatManager partyChatManager;
+
     public static long uptime;
 
     @Override
@@ -56,7 +59,10 @@ public class Main extends RePlugin {
             discord = new JDABuilder(CONFIG.var_discordToken)
                     .setEventManager(new AnnotatedEventManager())
                     .addEventListener(new DiscordEvents())
-                    .buildBlocking();
+                    .build().awaitReady();
+            if (discord.getGuildById(CONFIG.var_serverId).getTextChannelsByName("party-chat", false).size() == 1) {
+                partyChatManager = new PartyChatManager(discord);
+            }
             if (CONFIG.var_newUser) {
                 DiscordUtils.generateUserChannel(channel -> {
                     channel.sendMessage(new MessageBuilder()
