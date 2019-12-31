@@ -63,6 +63,7 @@ public class Main extends RePlugin {
                     .build().awaitReady();
             if (discord.getGuildById(CONFIG.var_serverId).getTextChannelsByName("party-chat", false).size() == 1) {
                 partyChatManager = new PartyChatManager(discord);
+                this.getReMinecraft().EVENT_BUS.registerListener(partyChatManager);
             }
             if (CONFIG.var_newUser) {
                 DiscordUtils.generateUserChannel(channel -> {
@@ -85,7 +86,6 @@ public class Main extends RePlugin {
             logger.logError("Couldn't log into Discord. Is the token invalid?");
             ex.printStackTrace();
         }
-
     }
 
     @Override

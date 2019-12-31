@@ -5,7 +5,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.server.ServerChatPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.queueskip.Main;
-import com.sasha.reminecraft.api.event.ChildServerPacketSendEvent;
+import com.sasha.reminecraft.api.event.ChildServerPacketRecieveEvent;
 import com.sasha.reminecraft.client.ReClient;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.entities.TextChannel;
@@ -22,20 +22,19 @@ public class PartyChatManager implements SimpleListener {
 
     public PartyChatManager(JDA discord) {
         this.discord = discord;
-        Main.INSTANCE.getReMinecraft().EVENT_BUS.registerListener(this);
         discord.addEventListener(this);
     }
 
     @SimpleEventHandler
-    public void onPckTx(ChildServerPacketSendEvent e) {
-        if (!(e.getSendingPacket() instanceof ClientChatPacket)) return;
+    public void onPckTx(ChildServerPacketRecieveEvent e) {
+        if (!(e.getRecievedPacket() instanceof ClientChatPacket)) return;
         if (!partyChatModeEnabled) return;
-        ClientChatPacket clientChatPacket = (ClientChatPacket) e.getSendingPacket();
+        ClientChatPacket clientChatPacket = (ClientChatPacket) e.getRecievedPacket();
         if (clientChatPacket.getMessage().startsWith("/") || clientChatPacket.getMessage().startsWith("\\")) return;
         JSONObject object = new JSONObject();
-        object.append("name", ReClient.ReClientCache.INSTANCE.playerName);
-        object.append("discord", discord.getSelfUser().getId());
-        object.append("content", clientChatPacket.getMessage().replace("`", "'").replace("\247", "&").trim());
+        object.put("name", ReClient.ReClientCache.INSTANCE.playerName);
+        object.put("discord", Main.CONFIG.var_managerId);
+        object.put("content", clientChatPacket.getMessage().replace("`", "'").replace("\247", "&").trim());
         getPartyChatChannel().sendMessage("```\n" + object.toString() + "\n```").submit();
         e.setCancelled(true);
     }
